@@ -1,0 +1,967 @@
+<!doctype html>
+<!-- AI disclosure: generated with Mistral AI from a TTW data dump; reviewed and edited with Claude (Anthropic). See the footer and README. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TTW Weapon Table</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #14100a; color: #e8c882; font-family: "Segoe UI", system-ui, sans-serif; font-size: 14px; }
+  .wrap { padding: 18px 22px 40px; }
+  h1 { font-size: 20px; margin: 0 0 4px; color: #ffe3a3; letter-spacing: .5px; }
+  h1 .pip { color: #ffb84d; }
+  .sub { color: #9a8358; font-size: 12.5px; margin: 0 0 14px; line-height: 1.6; max-width: 1150px; }
+  .panel { background: #1c1710; border: 1px solid #3b2f1c; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .calc summary { cursor: pointer; font-size: 15px; color: #ffcf87; user-select: none; }
+  .calc .equation { display: flex; align-items: baseline; justify-content: center; flex-wrap: wrap; gap: 10px;
+    padding: 18px 8px 10px; font-family: Georgia, "Times New Roman", serif; font-size: 30px; color: #ffcf87; }
+  .calc .var { font-style: italic; font-size: 34px; color: #ffe3a3; }
+  .calc .op { font-size: 28px; padding: 0 4px; }
+  .calc .equation input { width: 96px; background: transparent; border: none; border-bottom: 2px solid #6b5024;
+    color: #ffe3a3; font-family: Georgia, "Times New Roman", serif; font-size: 30px; text-align: center; padding: 0 6px; }
+  .calc .equation input:focus { outline: none; border-bottom-color: #ffb84d; }
+  .calc .unit { font-size: 18px; color: #9a8358; }
+  .calc .result { display: inline-block; min-width: 64px; text-align: center; font-weight: 700; font-size: 34px;
+    color: #8fd14f; border-bottom: 2px dashed #3f5c28; }
+  .calc .eqrow { margin: 12px 0 2px; font-size: 14px; color: #e8c882; }
+  .calc .eqrow .var { font-size: 17px; }
+  .qbtn { width: 20px; height: 20px; border-radius: 50%; background: #2a2012; color: #ffcf87;
+    border: 1px solid #6b5024; font-size: 11px; line-height: 1; cursor: pointer; padding: 0; margin-left: 6px; vertical-align: middle; }
+  .qbtn:hover { background: #3a2c14; border-color: #ffb84d; }
+  .calc .expl { display: none; margin: 6px 0 12px; padding: 9px 12px; background: #191309; border: 1px solid #3b2f1c;
+    border-radius: 8px; font-size: 13px; color: #c9ae76; line-height: 1.6; max-width: 900px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+  .controls input[type="search"], .controls select {
+    background: #221b10; color: #e8c882; border: 1px solid #4a3a20; border-radius: 7px; padding: 7px 10px; font-size: 13.5px; }
+  .controls input[type="search"] { min-width: 240px; }
+  .controls label { font-size: 13px; color: #b99b62; display: flex; align-items: center; gap: 5px; user-select: none; }
+  .controls button {
+    background: #3a2c14; color: #ffd9a0; border: 1px solid #6b5024; border-radius: 7px;
+    padding: 7px 14px; font-size: 13.5px; cursor: pointer; }
+  .controls button:hover { background: #4a3a18; border-color: #ffb84d; }
+  .count { color: #9a8358; font-size: 12.5px; margin-left: auto; }
+  .tblwrap { overflow: auto; max-height: 75vh; border: 1px solid #3b2f1c; border-radius: 10px; background: #191309; }
+  table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 1900px; }
+  thead th {
+    position: sticky; top: 0; z-index: 2; background: #2a2012; color: #ffcf87; cursor: pointer;
+    padding: 8px 9px; text-align: right; white-space: nowrap; border-bottom: 2px solid #4a3a20;
+    font-size: 12.5px; user-select: none; }
+  thead th.str { text-align: left; }
+  thead th:hover { background: #352915; }
+  thead th .arr { color: #ffb84d; font-size: 10px; }
+  tbody td { padding: 5px 9px; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums;
+    border-bottom: 1px solid #241c10; font-size: 13px; }
+  tbody td.str { text-align: left; }
+  tbody tr:hover td { background: #2a201269; }
+  tbody tr:nth-child(even) td { background: #1c1509; }
+  tbody tr:nth-child(even):hover td { background: #2a201269; }
+  td.name { font-weight: 600; color: #ffe3a3; }
+  td.dim { color: #9a8358; }
+  td.hot { color: #ffb84d; }
+  .help { color: #9a8358; font-size: 12px; margin: -2px 0 12px; line-height: 1.5; }
+  .help code { background: #241c10; border: 1px solid #4a3a20; border-radius: 4px; padding: 0 5px; color: #ffd479; font-size: 11.5px; }
+  .tag { display: inline-block; margin-left: 6px; padding: 0 5px; border-radius: 4px; font-size: 10.5px; font-weight: 700; vertical-align: middle; }
+  .tag.ai { background: #4a2c2c; color: #e0a590; border: 1px solid #6b3f3f; }
+  .tag.sim { background: #2c3a4a; color: #9fc4e0; border: 1px solid #3f5a6b; }
+  .tag.comp { background: #3a2c4a; color: #c0a5e0; border: 1px solid #56406b; }
+  .tag.cut { background: #4a442c; color: #e0d690; border: 1px solid #6b623f; }
+  .cmpbox .cmpsel { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 10px 0; }
+  .cmpbox select { background: #221b10; color: #e8c882; border: 1px solid #4a3a20; border-radius: 7px; padding: 7px 8px; font-size: 13px; max-width: 460px; }
+  .cmpbox .vs { color: #ffcf87; font-weight: 700; }
+  .cmpbox table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
+  .cmpbox th, .cmpbox td { border: 1px solid #3b2f1c; padding: 5px 9px; text-align: left; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+  .cmpbox th { background: #2a2012; color: #ffcf87; }
+  .cmpbox th:nth-child(1) { width: 16%; }
+  .cmpbox td.stat { color: #9a8358; }
+  .cmpbox td.good { color: #8fd14f; font-weight: 700; }
+  .cmpbox td.bad { color: #e05c4a; }
+  .foot { color: #9a8358; font-size: 12px; margin-top: 10px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>TTW WEAPON TABLE <span class="pip">&#9633;</span></h1>
+  <p class="sub">Statistics for all 546 weapon records in a Tale of Two Wastelands load order, extracted with FNVEdit &mdash; every value is the winning record data the game engine actually uses, not wiki numbers. Click any column header to sort; search and filters apply live and combine with sorting; the calculator panel shows the critical-hit equation; any two weapons can be compared head-to-head; the current view downloads as CSV.</p>
+
+  <details class="panel calc">
+    <summary>Critical hit calculator &mdash; how crit chance is computed &#9660;</summary>
+    <div class="equation">
+      <span class="var">a</span><input type="text" inputmode="decimal" id="calcA" value="38" /><span class="unit">%</span>
+      <span class="op">&times;</span>
+      <span class="var">b</span><input type="text" inputmode="decimal" id="calcB" value="2.5" />
+      <span class="op">=</span>
+      <span class="var">c</span><span class="result" id="calcC">95</span><span class="unit">%</span>
+    </div>
+    <div class="eqrow"><span class="var">a</span> &mdash; base critical chance (%) <button class="qbtn" id="qbtnA" type="button">?</button></div>
+    <div class="expl" id="explA">The character&rsquo;s base critical chance, before the weapon&rsquo;s multiplier. Luck grants +1% per point; the Finesse perk adds +5; the Built to Destroy trait adds +3; the 1st Recon Beret adds +5; crit-boosting armor such as Ulysses&rsquo; Duster or Elite Riot Gear adds +5; each True Police Stories magazine adds +5, or +10 with the Comprehension perk. The Pip-Boy never displays this total &mdash; it is the sum of Luck, perks, and equipped gear, added up by hand. A fully stacked base is about 38%. Flat bonuses &mdash; Light Touch (+5 in light armor), VATS (+5), and perks such as Laser Commander, Set Lasers for Fun, and Ninja &mdash; are added after the multiplication, so they stay outside a.</div>
+    <div class="eqrow"><span class="var">b</span> &mdash; weapon critical multiplier <button class="qbtn" id="qbtnB" type="button">?</button></div>
+    <div class="expl" id="explB">Each weapon multiplies the base chance by its own critical multiplier &mdash; the Crit&times; column of the table below. Most weapons are &times;1; a multiplier of &times;2 or more makes a weapon a strong critical-build candidate. The in-game weapon page only shows a qualitative &ldquo;better critical chance&rdquo;, so record data like this dump is the exact source.</div>
+    <div class="eqrow"><span class="var">c</span> &mdash; final chance to crit per shot (%) <button class="qbtn" id="qbtnC" type="button">?</button></div>
+    <div class="expl" id="explC">The chance that any single shot scores a critical hit, capped at 100%. Critical bonus damage is added to the weapon&rsquo;s base damage <em>before</em> the target&rsquo;s damage threshold is applied, so it helps push through DT rather than bypassing it. Sneak attacks made while hidden are guaranteed criticals no matter what c says, except with weapons whose Crit&times; is 0.</div>
+  </details>
+
+  <div class="controls">
+    <input type="search" id="q" placeholder="Type to filter: name, ammo, editor ID&#8230;" />
+    <button id="dosearch">Search</button>
+    <select id="type"><option value="">All types</option></select>
+    <select id="host"><option value="">All source files</option></select>
+    <label><input type="checkbox" id="critonly" /> Crit&times; &ge; 1.5</label>
+    <select id="avail">
+      <option value="player">Player-usable only</option>
+      <option value="more">+ companion &amp; sim</option>
+      <option value="all">Everything (AI / cut / quest)</option>
+    </select>
+    <button id="csv">Download CSV</button>
+    <span class="count" id="count"></span>
+  </div>
+
+  <p class="help">Search: <code>space</code> or <code>AND</code> = every term must match &middot; <code>OR</code> / <code>|</code> = either group matches &middot; e.g. <code>lucky OR that gun</code>, <code>silenced 22</code>. Filters apply as you type.</p>
+
+  <details class="panel cmpbox">
+    <summary>Compare two weapons head-to-head &#9660;</summary>
+    <div class="cmpsel">
+      <select id="cmpA"></select>
+      <span class="vs">VS</span>
+      <select id="cmpB"></select>
+    </div>
+    <div id="cmpout"><p class="help">Pick a weapon in each dropdown for a stat-by-stat diff; green = better, red = worse.</p></div>
+  </details>
+
+  <div class="tblwrap">
+    <table id="tbl">
+      <thead><tr id="hdr"></tr></thead>
+      <tbody id="body"></tbody>
+    </table>
+  </div>
+  <p class="foot">Raw record fields from FNVEdit. Damage is base weapon damage before ammo modifiers, perks, or difficulty; ammunition adds further crit-damage multipliers (e.g. .308 match, hollow point). &ldquo;Host file&rdquo; = which master owns the record in the load order; &ldquo;Winning file&rdquo; = which plugin supplies the final values. The Usable column marks creature/robot AI weapons (every leftover &ldquo;Big Guns&rdquo; tag in this data belongs to an AI weapon), companion-only copies, Anchorage simulation-only versions (records whose editor ID has a &ldquo;Wasteland&rdquo; twin), and cut/test records &mdash; the availability filter reveals them. Ammo names are shown in readable form; the raw record value appears as a tooltip on the ammo column, and console commands use FormIDs rather than any of these names.</p>
+  <p class="foot" id="about">
+    <strong>About this page.</strong> Stats come from a dump of a Tale of Two Wastelands 3.4 install (extracted with FNVEdit); values may differ with other TTW versions or mods.
+    The page, table and crit calculator were generated with Mistral AI, then reviewed and edited with Claude (Anthropic). The crit formula was checked against community wiki documentation;
+    individual values were not verified one by one in-game, so treat them as reference, not gospel.
+    Fan project, not affiliated with Bethesda, Microsoft or the TTW team. Not actively maintained.
+  </p>
+</div>
+<script>
+const HOSTMAP = {"00":"FalloutNV.esm (FNV)","01":"Dead Money","02":"Honest Hearts","03":"Old World Blues","04":"Lonesome Road","05":"Gun Runners Arsenal","06":"Fallout3.esm (FO3)","07":"Anchorage","08":"The Pitt","09":"Broken Steel","0A":"Point Lookout","0B":"Mothership Zeta","0C":"TaleOfTwoWastelands"};
+const COLS = [
+  { k: "name",  t: "Weapon",            str: true,  get: r => r[0] },
+  { k: "type",  t: "Skill",             str: true,  get: r => TYPENORM[r[4]] || r[4] },
+  { k: "av",    t: "Usable",            str: true,  get: r => availOf(r) },
+  { k: "dmg",   t: "DMG",               str: false, get: r => +r[6] },
+  { k: "cx",    t: "Crit\u00d7",        str: false, get: r => +r[7] },
+  { k: "cd",    t: "Crit DMG",          str: false, get: r => +r[8] },
+  { k: "cs",    t: "On crit",           str: false, get: r => +r[6] + +r[8] },
+  { k: "clip",  t: "Clip",              str: false, get: r => +r[9] },
+  { k: "rps",   t: "Shots/s",           str: false, get: r => +r[10] },
+  { k: "ammo",  t: "Ammo",              str: true,  get: r => prettyAmmo(r[5]) },
+  { k: "spr",   t: "Spread",            str: false, get: r => +r[12] },
+  { k: "wt",    t: "Weight",            str: false, get: r => +r[13] },
+  { k: "val",   t: "Value",             str: false, get: r => +r[14] },
+  { k: "skr",   t: "Skill req",         str: false, get: r => +r[15] },
+  { k: "str",   t: "STR req",           str: false, get: r => +r[16] },
+  { k: "snd",   t: "Sound",             str: true,  get: r => r[17] },
+  { k: "edid",  t: "Editor ID",         str: true,  get: r => r[1] },
+  { k: "fid",   t: "FormID",            str: true,  get: r => r[2] },
+  { k: "host",  t: "Host file",         str: true,  get: r => HOSTMAP[r[2].substring(0,2)] || r[2].substring(0,2) },
+  { k: "win",   t: "Winning file",      str: true,  get: r => r[3] }
+];
+const DATA = [
+["Laser","DLC04BrainRobobrainLaser1HPRight","0C0790C8","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","1","1.000000","0","6","2.500000","0.000000","10.000000","1.000000","1310","0","0","Normal",""],
+["Head Laser","DLC04BrainProtectronHeadLaser2HL","0C0790C7","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","1","2.000000","26","5","2.368400","0.000000","3.000000","1.000000","100","0","0","Normal",""],
+["Hand Laser","DLC04BrainProtectronHandLaser1HP","0C0790C6","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","1","2.000000","26","5","2.500000","0.000000","3.000000","1.000000","360","0","0","Normal",""],
+[".32 Pistol","Weap32CaliberPistolDad","0C008E3B","TaleOfTwoWastelands.esm","Guns","Magical Companion Ammo","14","1.000000","10","5","3.750000","0.500000","3.000000","2.000000","110","0","3","Normal",""],
+["Molotov Cocktail","WeapMolotovCocktail","0C008BA1","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","1","0.405405","1.000000","2.000000","0.500000","20","50","2","Silent","1"],
+["Cryo Mine","WeapMineCryo","0C008B8D","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.500000","1.000000","1.000000","0.500000","25","0","0","Silent","1"],
+["Cryo Grenade","WeapGrenadeCryo","0C008B8C","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.652200","0.000000","5.000000","0.500000","25","0","0","Silent","1"],
+["Cryolator","WeapCryolator","0C008AF4","TaleOfTwoWastelands.esm","Energy Weapons","TTWAmmoCryolator","16","3.000000","1","50","7.812500","0.500000","1.000000","13.000000","200","0","4","Silent",""],
+["Alloy Steel Combat Shotgun","DLC02WeapShotgunCombatWasteland","0C008AF3","TaleOfTwoWastelands.esm","Guns","AmmoList12Ga","55","1.500000","8","12","3.214286","1.500000","2.500000","6.000000","200","75","6","Loud",""],
+["Bumper Sword","WeapDCBumperSword","0C0083BD","TaleOfTwoWastelands.esm","Melee Weapons","","32","1.000000","32","12","1.349999","0.000000","10.000000","12.000000","150","50","8","Silent",""],
+["Boulder","BehemothBoulder","0C0060FD","TaleOfTwoWastelands.esm","Unarmed","","100","1.000000","0","1","0.652200","0.000000","0.000000","5.000000","0","0","0","Silent",""],
+["MPLX Novasurge","DLC05WeapUniquePlasmaPistol","0B00AB86","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","80","3.000000","75","16","1.750000","0.500000","2.200000","8.000000","850","75","4","Normal",""],
+["Captain's Sidearm","DLC05WeapCaptainsSideArm","0B00A9DD","TaleOfTwoWastelands.esm","Energy Weapons","TTWAmmoListAlien","75","2.000000","20","30","1.750000","3.000000","7.000000","2.000000","500","75","1","Loud",""],
+["Drone Cannon","DLC05WeapRobotCannonNonPlayerC","0B00A9AD","TaleOfTwoWastelands.esm","Energy Weapons","Alien Power Module","40","1.000000","25","1","1.000000","0.500000","2.000000","18.000000","2000","0","0","Loud",""],
+["Drone Cannon Ex-B","DLC05WeapRobotCannonNonPlayerB","0B00A9AC","TaleOfTwoWastelands.esm","Energy Weapons","Alien Power Module","40","1.000000","25","1","6.000000","0.500000","2.000000","18.000000","2000","0","0","Loud",""],
+["Alien Disintegrator","DLC05WeapRifleC","0B00A9AB","TaleOfTwoWastelands.esm","Energy Weapons","TTWAmmoListAlien","20","2.000000","50","100","2.000000","1.000000","2.000000","7.000000","300","75","4","Loud",""],
+["Alien Disintegrator","DLC05WeapRifleB","0B00A9AA","TaleOfTwoWastelands.esm","Energy Weapons","TTWAmmoListAlien","20","2.000000","50","100","2.000000","1.000000","2.000000","7.000000","300","75","4","Loud",""],
+["Alien Atomizer","DLC05WeapPistolC","0B00A9A9","TaleOfTwoWastelands.esm","Energy Weapons","TTWAmmoListAlien","35","1.000000","40","20","3.000000","0.000000","0.000000","2.000000","500","50","3","Loud",""],
+["Alien Atomizer","DLC05WeapPistolB","0B00A9A8","TaleOfTwoWastelands.esm","Energy Weapons","TTWAmmoListAlien","35","1.000000","40","20","3.000000","0.000000","0.000000","2.000000","500","50","3","Loud",""],
+["Shock Baton","DLC05WeapBatonC","0B00A9A7","TaleOfTwoWastelands.esm","Melee Weapons","","20","1.000000","4","1","2.307700","0.000000","0.000000","2.000000","70","50","2","Silent",""],
+["Shock Baton","DLC05WeapBatonB","0B00A9A6","TaleOfTwoWastelands.esm","Melee Weapons","","20","1.000000","4","1","2.307700","0.000000","0.000000","2.000000","70","50","2","Silent",""],
+["Atomic Pulverizer","DLC05WeapPistolUnique","0B00A77F","TaleOfTwoWastelands.esm","Energy Weapons","TTWAmmoListAlien","37","2.000000","40","20","2.500000","0.000000","0.000000","2.000000","500","50","3","Loud",""],
+["Destabilizer","DLC05WeapRifleUnique","0B00A77E","TaleOfTwoWastelands.esm","Energy Weapons","TTWAmmoListAlien","40","2.000000","30","100","4.500000","1.500000","4.000000","7.000000","1200","75","4","Loud",""],
+["Drone Cannon Ex-B","DLC05WeapRobotCannonUnique","0B00A77D","TaleOfTwoWastelands.esm","Energy Weapons","TTWAmmoListAlien","75","1.000000","150","1","3.333300","0.500000","2.000000","18.000000","2000","100","7","Loud",""],
+["Turret Gun","DLC05TurretGunCeiling01","0B009A32","TaleOfTwoWastelands.esm","Energy Weapons","Alien Power Module","11","1.000000","10","24","3.000000","1.000000","2.000000","7.000000","140","0","0","Normal",""],
+["Paulson's Revolver","DLC05weapPaulsonsRevolver","0B00829F","TaleOfTwoWastelands.esm","Guns","AmmoList44Magnum","60","2.000000","5","6","2.250000","3.000000","5.000000","4.000000","300","50","5","Loud",""],
+["Feudal Katana","DLC05WeapKatana","0B0080B5","TaleOfTwoWastelands.esm","Melee Weapons","","15","1.000000","4","1","3.230769","0.000000","0.000000","2.000000","70","75","4","Silent",""],
+["Drone Cannon","DLC05WeapRobotCannonNonPlayer","0B007BA1","TaleOfTwoWastelands.esm","Energy Weapons","Alien Power Module","40","1.000000","25","1","6.000000","0.500000","2.000000","18.000000","1000","0","0","Loud",""],
+["Paulson's Revolver","DLC05weapPaulsonsRevolverNonPlayable","0B006E1E","TaleOfTwoWastelands.esm","Guns","AmmoList44Magnum","90","2.000000","35","6","2.249999","3.000000","5.000000","3.500000","300","50","5","Loud",""],
+["Electro-Suppressor","DLC05WeapBatonUnique","0B003C54","TaleOfTwoWastelands.esm","Melee Weapons","","25","1.000000","4","1","2.307700","0.000000","0.000000","2.000000","70","50","2","Normal",""],
+["Spanner","DLC05WeapSpanner","0B003C52","TaleOfTwoWastelands.esm","Melee Weapons","","15","1.000000","15","1","2.307692","0.000000","0.000000","2.000000","70","25","3","Silent",""],
+["Cryo Grenade","DLC05WeapGrenadeCryo","0B002A71","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.652200","0.000000","5.000000","0.500000","50","0","0","Silent","1"],
+["Drone Cannon","DLC05WeapRobotCannon","0B000845","TaleOfTwoWastelands.esm","Energy Weapons","TTWAmmoListAlien","60","1.000000","120","1","3.333300","0.500000","2.000000","18.000000","2000","100","7","Loud",""],
+["Alien Disintegrator","DLC05WeapRifle","0B000842","TaleOfTwoWastelands.esm","Energy Weapons","TTWAmmoListAlien","65","2.000000","50","100","2.000000","1.000000","2.000000","7.000000","300","75","4","Loud",""],
+["Alien Atomizer","DLC05WeapPistol","0B00083F","TaleOfTwoWastelands.esm","Energy Weapons","TTWAmmoListAlien","35","1.000000","40","20","2.500000","0.000000","0.000000","2.000000","500","50","3","Loud",""],
+["Shock Baton","DLC05WeapBaton","0B00083D","TaleOfTwoWastelands.esm","Melee Weapons","","20","1.000000","4","1","2.307700","0.000000","0.000000","2.000000","70","50","2","Silent",""],
+["Samurai's Sword","DLC05WeapSamuraiSword","0B00083B","TaleOfTwoWastelands.esm","Melee Weapons","","24","2.000000","40","1","3.230769","0.000000","0.000000","3.000000","75","75","4","Silent",""],
+["BB Gun","DLC04WeapBBGunNonPlayable","0A0125FB","TaleOfTwoWastelands.esm","Guns","BB","4","1.000000","4","100","1.538461","0.500000","1.500000","2.000000","36","0","1","Silent",""],
+["Baseball Bat","DLC04WeapBaseballBatNonPlayable","0A0125FA","TaleOfTwoWastelands.esm","Melee Weapons","","22","1.000000","22","12","1.649999","0.000000","0.000000","3.000000","55","25","4","Silent",""],
+[".32 Rifle","DLC04WeapHuntingRifleNonPlayable","0A0125F9","TaleOfTwoWastelands.esm","Guns","TTWAmmoList32Caliber","37","1.000000","37","5","0.750000","0.300000","0.300000","6.000000","150","25","4","Loud",""],
+["Lead Pipe","DLC04WeapLeadPipeNonPlayable","0A0125F8","TaleOfTwoWastelands.esm","Melee Weapons","","22","1.000000","22","12","2.538461","0.000000","10.000000","3.000000","75","50","5","Silent",""],
+["Tire Iron","DLC04WeapTireIronNonPlayable","0A0125F7","TaleOfTwoWastelands.esm","Melee Weapons","","15","1.000000","15","12","2.307692","0.000000","10.000000","3.000000","40","0","3","Silent",""],
+["Combat Knife","DLC04WeapKnifeCombatNonPlayable","0A0125F6","TaleOfTwoWastelands.esm","Melee Weapons","","15","2.000000","15","12","3.230769","0.000000","0.000000","1.000000","50","50","3","Silent",""],
+["Knife","DLC04WeapKnifeNonPlayable","0A0125F5","TaleOfTwoWastelands.esm","Melee Weapons","","8","1.000000","8","12","3.000000","0.000000","0.000000","1.000000","20","0","1","Silent",""],
+["Ritual Knife","DLC04WeapRitualKnife","0A01098A","TaleOfTwoWastelands.esm","Melee Weapons","","10","3.000000","18","12","3.000000","0.000000","0.000000","1.000000","20","0","1","Silent",""],
+["Radioactive Gore","DLC04GhoulGrenade","0A0106B0","TaleOfTwoWastelands.esm","Explosives","","1","4.000000","5","1","0.652200","0.000000","5.000000","1.000000","1","0","0","Silent",""],
+["Backwater Rifle","DLC04WeapUniqueRewardRifle","0A00ED14","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","45","2.500000","45","10","1.538461","0.250000","0.250000","7.000000","250","50","5","Normal",""],
+["The Dismemberer","DLC04WeapUniqueDismemberer","0A00ED0F","TaleOfTwoWastelands.esm","Melee Weapons","","35","2.000000","45","1","1.500000","0.000000","0.000000","6.000000","55","50","5","Silent",""],
+["Radioactive Spit","DLC04SwamplurkMissile","0A00DA2F","TaleOfTwoWastelands.esm","Big Guns","Missile","100","4.000000","50","10","1.578947","0.000000","0.000000","1.000000","130","0","0","Silent","1"],
+["Pa's Fishing Aid","DLC04WeapUniquePasFishingAid","0A00D5B3","TaleOfTwoWastelands.esm","Guns","AmmoList12Ga","120","1.000000","6","2","2.250000","1.000000","4.000000","6.000000","350","50","6","Loud",""],
+["Fertilizer Shovel","DLC04WeapUniqueFertilizerShovel","0A00D5A8","TaleOfTwoWastelands.esm","Melee Weapons","","20","3.000000","40","12","1.650000","0.000000","0.000000","3.000000","55","0","3","Silent",""],
+["Frag Grenade","DLC04TrapWeapGrenadeFrag","0A00D3B5","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.652174","0.000000","5.000000","0.500000","25","25","2","Silent","1"],
+["Bio-Gas Canister","DLC04BioGasGrenade","0A00D1E4","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.652174","0.000000","5.000000","0.500000","50","0","0","Silent",""],
+["Microwave Emitter","DLC04MicrowaveEmitter","0A00C1C3","TaleOfTwoWastelands.esm","Energy Weapons","Mesmetron Power Cell","60","2.000000","100","5","3.000000","0.200000","0.200000","8.000000","500","75","2","Normal",""],
+["Lever-Action Rifle","DLC04WeapRifle","0A0088DE","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","40","2.000000","40","10","1.538461","0.250000","0.250000","8.000000","200","50","5","Normal",""],
+["Axe","DLC04WeapAxe","0A00838F","TaleOfTwoWastelands.esm","Melee Weapons","","30","2.000000","40","1","1.500000","0.000000","0.000000","6.000000","60","50","5","Silent",""],
+["Shovel","DLC04WeapShovel","0A0082B5","TaleOfTwoWastelands.esm","Melee Weapons","","12","3.000000","20","12","1.500000","0.000000","0.000000","3.000000","55","0","3","Silent",""],
+["Double-Barrel Shotgun","DLC04WeapShotgun","0A007473","TaleOfTwoWastelands.esm","Guns","AmmoList12Ga","85","1.000000","5","2","2.250002","3.000000","8.000000","6.000000","175","50","6","Loud",""],
+["Toy Knife","DLC04WeapToyKnife","0A006AB7","TaleOfTwoWastelands.esm","Melee Weapons","","1","1.000000","10","1","3.000000","0.000000","0.000000","1.000000","20","0","1","Silent",""],
+["Callahan's Magnum","DLC03WeapUniqueCallahansMagnum","0900B806","TaleOfTwoWastelands.esm","Guns","AmmoList44Magnum","125","2.000000","100","6","1.875000","1.000000","0.500000","3.500000","750","100","5","Loud",""],
+["Slo-Burn Flamer","DLC03UniqueFlamer02","090091B3","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListFlamerFuel","18","4.000000","1","60","8.000000","0.500000","1.000000","15.000000","500","50","7","Normal",""],
+["Rapid-Torch Flamer","DLC03UniqueFlamer","090091B1","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListFlamerFuel","16","4.000000","1","60","8.000000","0.500000","1.000000","15.000000","500","50","7","Normal",""],
+["Discharge Hammer","DLC03WeapShockHammer","090088BF","TaleOfTwoWastelands.esm","Melee Weapons","","70","1.000000","35","1","1.578948","0.000000","0.000000","20.000000","180","100","8","Normal",""],
+["Precision Gatling Laser","DLC03UniqueGatlingLaser","09008895","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListElectronChargePack","12","2.000000","12","240","30.000000","0.600000","0.325000","18.000000","3000","100","8","Loud",""],
+["Tesla Cannon Prototype","DLC03WeapTeslaCannon","09006725","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListElectronChargePack","80","2.000000","40","1","1.578947","0.000000","0.000000","8.000000","1800","100","8","Normal",""],
+["Laser Shotgun","DLC03LaserShotgun","09005818","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","75","1.500000","25","24","2.727279","0.500000","2.000000","9.000000","1000","75","4","Loud",""],
+["Radioactive Gore","DLC03GhoulGrenade","0900522D","TaleOfTwoWastelands.esm","Explosives","","1","4.000000","5","1","0.652200","0.000000","5.000000","1.000000","1","0","0","Silent",""],
+["LibertyPrimeWeapBomb","DLC03LibertyPrimeWeapBombSPECIAL","09003CC5","TaleOfTwoWastelands.esm","Big Guns","","1000","1.000000","0","12","0.652200","0.000000","0.000000","0.000000","23730","0","0","Normal","1"],
+["Laser","DLC03Turret04Laser2HR","0900101D","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","10","1.000000","10","200","9.000000","1.000000","2.000000","1.000000","290","0","0","Normal",""],
+["Scoped .44 Magnum","DLC01WernherWeap44MagnumScoped","0800B74B","TaleOfTwoWastelands.esm","Guns","AmmoList44Magnum","35","2.000000","35","6","2.249999","0.300000","2.000000","4.000000","300","50","5","Loud",""],
+["Man Opener","DLC01UniqueWeapManOpener","0800B66C","TaleOfTwoWastelands.esm","Melee Weapons","","58","1.000000","5","1","1.000000","0.000000","10.000000","20.000000","250","25","7","Normal",""],
+["Steel Saw","DLC01WeapSteelSaw","0800B643","TaleOfTwoWastelands.esm","Melee Weapons","","26","1.000000","5","1","1.000000","0.000000","10.000000","20.000000","200","25","7","Normal",""],
+["The Mauler","DLC01UniqueWeapAutoAxe","0800B514","TaleOfTwoWastelands.esm","Melee Weapons","","65","1.000000","5","1","1.000000","0.000000","10.000000","20.000000","250","50","7","Normal",""],
+["Metal Blaster","DLC01UniqueWeapLaserRifle","0800B513","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","55","1.500000","6","24","2.045459","2.500000","4.500000","8.000000","600","50","3","Loud",""],
+["Perforator","DLC01UniqueWeapInfiltrator","0800B512","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","22","1.500000","33","24","6.000000","0.500000","0.000000","7.000000","600","50","5","Silent",""],
+["Steel Knuckles","DLC01UniqueWeapSteelKnuckles","0800B4B3","TaleOfTwoWastelands.esm","Unarmed","","27","1.000000","27","12","1.578946","0.000000","0.000000","1.000000","20","25","2","Silent",""],
+["Wild Bill's Sidearm","DLC01WeapUniqueBill32CalPistol","0800A7CB","TaleOfTwoWastelands.esm","Guns","TTWAmmoList32Caliber","16","1.000000","24","5","5.999997","0.500000","3.000000","2.000000","250","0","3","Normal",""],
+["Infiltrator","DLC01WeapInfiltrator","0800737C","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","18","1.000000","18","24","8.000000","0.500000","0.000000","7.000000","400","50","5","Silent",""],
+["Auto Axe","DLC01WeapAutoAxe","080032E1","TaleOfTwoWastelands.esm","Melee Weapons","","58","1.000000","5","1","1.000000","0.000000","10.000000","20.000000","200","50","7","Normal",""],
+["Laser Rifle","DLC02WeapLaserRifle","0700CBFC","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","23","1.500000","22","24","3.081800","0.025000","0.000000","8.000000","500","25","3","Loud",""],
+["Alloy Steel Combat Shotgun","DLC02WeapShotgunCombat","0700C7C2","TaleOfTwoWastelands.esm","Guns","AmmoList12Ga","55","1.500000","8","12","3.214300","1.500000","2.500000","7.000000","200","25","6","Loud",""],
+["Power Fist","DLC02WeapPowerFist","0700C6F0","TaleOfTwoWastelands.esm","Unarmed","","40","1.000000","40","12","1.090909","0.000000","0.000000","6.000000","100","25","5","Normal",""],
+["Gauss Rifle Prototype","DLC02WeapGaussRifleWasteland","0700C07D","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","100","2.500000","50","1","1.071429","0.000000","0.000000","12.000000","500","75","5","Loud",""],
+["Jingwei's Shocksword","DLC02WeapShockSwordWasteland","0700C07C","TaleOfTwoWastelands.esm","Melee Weapons","","35","1.500000","25","1","2.307692","0.000000","0.000000","3.000000","500","25","4","Silent",""],
+["Trench Knife","DLC02WeapKnifeCombatWasteland","0700C07B","TaleOfTwoWastelands.esm","Melee Weapons","","15","3.000000","20","12","3.230769","0.000000","0.000000","1.000000","50","25","3","Silent",""],
+["Chinese Dragoon Pistol","DLC02WeapChinesePistolWasteland","0700C071","TaleOfTwoWastelands.esm","Guns","AmmoList9mm","18","1.500000","18","10","2.500000","1.000000","4.000000","1.500000","190","0","2","Normal",""],
+["Chinese Dragoon Assault Rifle","DLC02WeapChineseAssaultRifleWasteland","0700C070","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","21","1.500000","21","24","8.000000","1.500000","4.000000","8.000000","500","75","6","Loud",""],
+["Alloy Steel 10mm Submachine Gun","DLC02Weap10mmSubmachineGunWasteland","0700C06F","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","21","1.500000","21","30","9.000000","0.750000","2.500000","4.000000","330","25","5","Loud",""],
+["Alloy Steel Assault Rifle","DLC02WeapAssaultRifleWasteland","0700C06E","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","18","1.500000","18","24","8.000000","0.750000","2.000000","6.000000","300","25","5","Loud",""],
+["Alloy Steel Silenced 10mm Pistol","DLC02Weap10mmPistolSilencedWasteland","0700C06D","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","20","2.500000","20","12","2.500000","0.500000","1.500000","2.000000","250","25","4","Silent",""],
+["Alloy Steel 10mm Pistol","DLC02Weap10mmPistolWasteland","0700C06C","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","22","1.500000","22","12","2.500000","0.250000","0.250000","2.000000","225","25","4","Normal",""],
+["Jingwei's Shocksword","DLC02WeapShockSword","0700B554","TaleOfTwoWastelands.esm","Melee Weapons","","50","2.000000","35","1","2.307692","0.000000","0.000000","3.000000","500","25","4","Silent",""],
+["Chinese Assault Rifle","DLC02WeapHIGHDMGChineseAssaultRifle","0700AF7D","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","1000","1.000000","10","24","8.000000","1.500000","4.000000","7.000000","500","25","6","Loud",""],
+["Montgomery's Assault Rifle","DLC02WeapMontgomeryAssaultRifle","0700AACC","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","18","1.000000","18","24","8.000000","0.750000","0.000000","7.000000","300","25","5","Loud",""],
+["Alloy Steel 10mm Submachine Gun","DLC02Weap10mmSubmachineGun","07003F72","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","21","1.500000","21","30","10.000000","0.750000","2.500000","5.000000","330","25","5","Loud",""],
+["Alloy Steel Silenced 10mm Pistol","DLC02Weap10mmPistolSilenced","07003F4A","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","20","2.500000","20","12","2.500000","0.250000","1.500000","3.000000","250","25","4","Silent",""],
+["Alloy Steel 10mm Pistol","DLC02Weap10mmPistol","07003F49","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","22","1.500000","22","12","5.999989","0.250000","0.250000","3.000000","225","25","4","Normal",""],
+["Sniper Rifle","DLC02WeapSniperRifle","07003F48","TaleOfTwoWastelands.esm","Guns","AmmoList308","40","2.500000","40","5","1.928600","0.020000","0.000000","10.000000","300","25","6","Normal",""],
+["Minigun","DLC02WeapMinigun","07003F47","TaleOfTwoWastelands.esm","Guns","AmmoList5mm","12","0.000000","12","240","20.000000","1.000000","0.000000","25.000000","1000","25","10","Loud","1"],
+["Missile Launcher","DLC02WeapMissileLauncher","07003F46","TaleOfTwoWastelands.esm","Explosives","AmmoListMissile","20","0.000000","0","1","1.578947","0.500000","4.000000","20.000000","500","25","6","Normal","1"],
+["Frag Mine","DLC02WeapMineFrag","07003F45","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.500000","1.000000","1.000000","0.500000","25","25","1","Silent","1"],
+["Trench Knife","DLC02WeapKnifeCombat","07003F44","TaleOfTwoWastelands.esm","Melee Weapons","","15","3.000000","20","12","3.230769","0.000000","0.000000","1.000000","50","25","3","Silent",""],
+["Frag Grenade","DLC02WeapGrenadeFrag","07003F43","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.652174","0.000000","5.000000","0.500000","25","25","2","Silent","1"],
+["Flamer","DLC02WeapFlamer","07003F42","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListFlamerFuel","16","4.000000","1","60","8.000000","0.500000","1.000000","15.000000","500","25","7","Normal",""],
+["Chinese Pistol","DLC02WeapChinesePistol","07003F41","TaleOfTwoWastelands.esm","Guns","AmmoList9mm","12","1.000000","12","10","5.999989","1.000000","4.000000","2.000000","190","0","2","Normal",""],
+["Chinese Officer's Sword","DLC02WeapChineseOfficerSword","07003F40","TaleOfTwoWastelands.esm","Melee Weapons","","25","2.000000","25","1","2.307692","0.000000","0.000000","3.000000","500","25","4","Silent",""],
+["Chinese Dragoon Assault Rifle","DLC02WeapChineseAssaultRifle","07003F3F","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","21","1.000000","21","24","8.000000","1.500000","4.000000","7.000000","500","25","6","Loud",""],
+["Alloy Steel Assault Rifle","DLC02WeapAssaultRifle","07003F3E","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","18","1.500000","18","24","8.000000","0.750000","2.000000","7.000000","300","25","5","Loud",""],
+["Gauss Rifle Prototype","DLC02WeapGaussRifle","07003A04","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","100","2.500000","50","1","1.071400","0.000000","0.000000","12.000000","500","25","5","Loud",""],
+["Occam's Razor","WeapUniqueKnifeCombat","060CB602","TaleOfTwoWastelands.esm","Melee Weapons","","18","2.000000","15","12","3.230800","0.000000","0.000000","1.000000","65","50","3","Silent",""],
+["Fisto!","WeapUniquePowerFist","060CB601","TaleOfTwoWastelands.esm","Unarmed","","50","1.500000","50","12","1.090900","0.000000","0.000000","6.000000","100","50","5","Normal",""],
+["Victory Rifle","WeapUniqueVictoryRifle","060CB548","TaleOfTwoWastelands.esm","Guns","AmmoList308","57","1.500000","57","5","1.928571","0.020000","0.000000","10.000000","450","75","6","Normal",""],
+["Vengeance","WeapUniqueVengeance","060CB547","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListElectronChargePack","13","1.500000","15","240","30.000000","0.600000","0.500000","18.000000","2400","100","8","Loud",""],
+["Breaker","WeapUniqueBreaker","060CB546","TaleOfTwoWastelands.esm","Melee Weapons","","25","0.000000","25","12","1.500000","0.000000","10.000000","4.000000","30","25","7","Silent",""],
+["Plunkett's Valid Points","WeapUniqueJundersBrassKnuckles","060CAFA9","TaleOfTwoWastelands.esm","Unarmed","","28","1.500000","28","12","2.368400","0.000000","0.000000","1.000000","30","50","3","Silent",""],
+["Stabhappy","WeapUniqueStabhappy","060C80BE","TaleOfTwoWastelands.esm","Melee Weapons","","15","3.000000","18","12","3.230800","0.000000","0.000000","1.000000","65","50","3","Silent",""],
+["Burnmaster","WeapUniqueBurnmaster","060C80BD","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListFlamerFuel","24","4.000000","1","60","8.000000","0.500000","1.000000","15.000000","500","50","7","Normal",""],
+["Excalibat","WeapUniqueExcalibat","060C80BC","TaleOfTwoWastelands.esm","Melee Weapons","","22","1.500000","22","12","1.649999","0.000000","0.000000","3.000000","75","25","4","Silent",""],
+["Curse Breaker","WeapUniqueCursebreaker","060C80BB","TaleOfTwoWastelands.esm","Melee Weapons","","22","1.500000","22","12","1.649999","0.000000","0.000000","3.000000","75","25","4","Silent",""],
+["Firelance","WeapUniqueFirelance","060C80BA","TaleOfTwoWastelands.esm","Energy Weapons","TTWAmmoListAlien","80","100.000000","80","10","1.875000","0.000000","0.000000","2.000000","750","75","1","Loud",""],
+["Love Tap","WeapUniqueLoveTap","060C80B9","TaleOfTwoWastelands.esm","Unarmed","","18","2.000000","18","12","2.052632","0.000000","0.000000","1.000000","20","25","2","Silent",""],
+["Clover's Cleaver","WeapUniqueCloversCleaver","060C80B8","TaleOfTwoWastelands.esm","Melee Weapons","","18","1.000000","30","1","2.538461","0.000000","0.000000","3.000000","100","25","4","Silent",""],
+["Xuanlong Assault Rifle","WeapUniqueXuanlongAssaultRifle","060C800E","TaleOfTwoWastelands.esm","Guns","AmmoList5mm","15","2.000000","15","36","8.000000","1.500000","0.000000","7.000000","800","75","6","Loud",""],
+["Jack","WeapUniqueJackTheRipper","060C6E5B","TaleOfTwoWastelands.esm","Melee Weapons","","50","1.500000","15","12","1.000000","0.000000","10.000000","6.000000","200","50","3","Normal",""],
+["Protectron's Gaze","WeapUniqueProtectronGaze","060C553F","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","50","1.000000","25","20","2.999999","2.500000","2.500000","3.000000","320","25","1","Normal",""],
+["Ant's Sting","WeapUniqueAntSting","060C553E","TaleOfTwoWastelands.esm","Melee Weapons","","10","1.000000","10","12","3.000000","0.000000","0.000000","1.000000","30","25","1","Silent",""],
+["Board of Education","WeapUniqueBoardOfEducation","060C310F","TaleOfTwoWastelands.esm","Melee Weapons","","25","1.000000","25","12","2.368422","0.000000","10.000000","4.000000","60","25","7","Silent",""],
+["The Shocker","WeapUniqueShocker","060BFF62","TaleOfTwoWastelands.esm","Unarmed","","40","1.000000","40","12","1.090900","0.000000","0.000000","6.000000","150","50","5","Normal",""],
+["Mesmetron","RobobrainMesmetronDC","060BF5A4","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","1","100.000000","10","1","1.578900","1.000000","1.000000","2.000000","500","0","0","Normal",""],
+["Elder Lyons' Laser Pistol","ElderLyonsLaserPistol","060B4178","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","20","1.500000","20","30","5.999997","0.000000","0.000000","2.000000","420","25","1","Normal",""],
+["Miss Launcher","WeapUniqueMissLauncher","060B2644","TaleOfTwoWastelands.esm","Explosives","AmmoListMissile","125","0.000000","0","1","1.578900","0.300000","4.000000","15.000000","400","75","6","Normal",""],
+["Cross' Super Sledge","FollowersCrossSuperSledge","060B0E7C","TaleOfTwoWastelands.esm","Melee Weapons","","70","1.000000","35","12","1.500000","0.000000","0.000000","0.000000","130","100","8","Normal",""],
+["Clover's Sawed-Off Shotgun","FollowersCloverShotgun","060AE8AE","TaleOfTwoWastelands.esm","Guns","Magical Companion Ammo","100","1.000000","6","2","2.343750","4.000000","10.000000","0.000000","190","50","4","Normal",""],
+["Col. Autumn's Laser Pistol","MQ11AutumnLaserPistol","060ABBE4","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","18","1.500000","18","30","7.500000","0.000000","1.000000","3.000000","420","0","1","Normal",""],
+["The Tenderizer","WeapUniqueTenderizer","060A874B","TaleOfTwoWastelands.esm","Melee Weapons","","30","1.000000","15","1","1.428572","0.000000","10.000000","12.000000","230","50","7","Normal",""],
+["Reservist's Rifle","WeapUniqueReservistsRifle","06092966","TaleOfTwoWastelands.esm","Guns","AmmoList308","57","2.500000","57","3","2.571400","0.000000","1.000000","10.000000","500","75","6","Normal",""],
+["Shriek","MirelurkSonic2HL","0607F598","TaleOfTwoWastelands.esm","Energy Weapons","Sonic Energy","60","2.000000","60","1","1.578947","0.000000","0.000000","1.000000","40","0","0","Loud",""],
+["Sergeant RL-3's Plasma Gun","FollowerRL3Plasma1HP","0607C10C","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","60","1.000000","30","6","5.999989","0.300000","2.200000","1.000000","7200","0","0","Normal",""],
+["Sergeant RL-3's Flamer","FollowerRL3Flamer2HL","0607C10B","TaleOfTwoWastelands.esm","Energy Weapons","Flamer Fuel","6","5.000000","5","10","8.000000","12.000000","15.000000","1.000000","210","0","0","Normal",""],
+["Highwayman's Friend","WeapUniqueHighwaymansFriendTireIron","06078442","TaleOfTwoWastelands.esm","Melee Weapons","","23","1.000000","23","12","2.307692","0.000000","10.000000","5.000000","75","0","3","Silent",""],
+["Vampire's Edge","WeapUniqueVancesChineseSword","06078441","TaleOfTwoWastelands.esm","Melee Weapons","","18","2.000000","23","1","2.538500","0.000000","0.000000","1.000000","100","25","4","Silent",""],
+["Butch's Toothpick","WeapUniqueButchToothpick","06078440","TaleOfTwoWastelands.esm","Melee Weapons","","10","2.500000","13","1","4.846200","0.000000","10.000000","1.000000","50","25","1","Silent",""],
+["Fawkes' Super Sledge","WeapUniqueFawkesSuperSledge","0607843F","TaleOfTwoWastelands.esm","Melee Weapons","","70","1.000000","70","1","1.950000","0.000000","0.000000","18.000000","300","100","8","Normal",""],
+["O'Grady's Peacemaker","WeapUniqueOGradysPoliceBaton","0607843D","TaleOfTwoWastelands.esm","Melee Weapons","","12","1.000000","12","1","2.769200","0.000000","0.000000","2.000000","100","0","1","Silent",""],
+["Sonora Cruz's 10mm Pistol","SonoraCruzWeap10mmPistol","0606F210","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","100","1.000000","100","12","15.000000","0.500000","3.000000","2.000000","43590","25","4","Normal",""],
+["Sydney's 10mm \"Ultra\" SMG","WeapUniqueSydneys10mmSubGun","0606E7CC","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","22","1.000000","22","50","9.000000","2.200000","0.000000","5.000000","430","50","5","Loud",""],
+["The Kneecapper","WeapUniqueKneecapper","0606B53A","TaleOfTwoWastelands.esm","Guns","AmmoList12Ga","100","1.000000","6","2","2.343750","4.000000","7.500000","3.000000","350","50","4","Loud",""],
+["A3-21's Plasma Rifle","WeapUniqueA321PlasmaRifle","0606B539","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","50","2.000000","50","12","2.800000","0.200000","0.200000","8.000000","2200","25","3","Loud",""],
+["Eugene","WeapUniqueMS18Minigun","0606B538","TaleOfTwoWastelands.esm","Guns","AmmoList5mm","15","1.500000","15","240","20.000000","1.000000","0.000000","18.000000","1500","100","10","Loud",""],
+["Smuggler's End","WeapUniqueSmugglersEndLaserPistol","0606B536","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","20","1.500000","20","30","5.999997","0.000000","0.000000","2.000000","450","25","1","Normal",""],
+["Black Bart's Bane","WeapUniqueBlackBartsBBGun","0606B535","TaleOfTwoWastelands.esm","Guns","BB","8","5.000000","8","100","1.538500","0.500000","1.500000","2.000000","60","0","1","Silent",""],
+["The Terrible Shotgun","WeapUniqueTerribleShotgun","0606B534","TaleOfTwoWastelands.esm","Guns","AmmoList12Ga","80","1.000000","9","12","2.000000","6.000000","7.000000","10.000000","250","75","6","Loud",""],
+["Wanda","WeapUniqueWandaAssaultRifle","0606B533","TaleOfTwoWastelands.esm","Guns","AmmoList5mm","12","2.000000","12","50","8.000000","1.500000","0.000000","7.000000","600","25","5","Loud",""],
+["Law Dog","WeapUniqueLawDog32CalPistol","0606B532","TaleOfTwoWastelands.esm","Guns","TTWAmmoList32Caliber","15","2.000000","15","5","6.000000","0.500000","3.000000","2.000000","210","0","3","Normal",""],
+["Col. Autumn's 10mm Pistol","WeapUniqueColAutumns10mmPistol","0606B531","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","27","1.000000","27","12","2.750000","0.800000","0.500000","3.000000","325","25","4","Normal",""],
+["The Break","WeapUniqueTheBreak","06066C77","TaleOfTwoWastelands.esm","Melee Weapons","","20","1.000000","20","1","1.428572","0.000000","0.000000","1.000000","50","0","2","Silent",""],
+["Ol' Painless","WeapUniqueOlPainless","06066C76","TaleOfTwoWastelands.esm","Guns","TTWAmmoList32Caliber","40","2.000000","40","5","1.125000","0.000000","0.300000","6.000000","250","25","4","Normal",""],
+["Sydney's 10mm \"Ultra\" SMG","WeapUniqueSydneys10mmSubGunFollwerVersion","06066346","TaleOfTwoWastelands.esm","Guns","Magical Companion Ammo","22","1.000000","22","50","9.000000","2.200000","0.000000","5.000000","430","50","5","Loud",""],
+["Clover's Chinese Officer's Sword","FollowersCloverChineseOfficerSword","0606415D","TaleOfTwoWastelands.esm","Melee Weapons","","13","1.500000","18","1","2.538500","0.000000","0.000000","0.000000","75","0","0","Silent",""],
+["Charon's Combat Knife","FollowersCharonCombatKnife","06064093","TaleOfTwoWastelands.esm","Melee Weapons","","15","2.000000","15","12","3.230800","0.000000","0.000000","0.000000","50","50","3","Silent",""],
+["Butch's Switchblade","FollowersButchSwitchblade","0606407F","TaleOfTwoWastelands.esm","Melee Weapons","","7","2.000000","11","1","4.846200","0.000000","10.000000","0.000000","50","25","1","Silent",""],
+["Jericho's Nail Board","FollowersJerichoNailBoard","06063FDC","TaleOfTwoWastelands.esm","Melee Weapons","","25","0.000000","25","12","1.421100","0.000000","10.000000","0.000000","30","25","7","Silent",""],
+["Fawkes' Sledgehammer","FollowersFawkesSledgehammer","06063FA2","TaleOfTwoWastelands.esm","Melee Weapons","","24","1.000000","24","1","1.894737","0.000000","10.000000","0.000000","130","50","7","Silent",""],
+["Star Paladin Cross' Laser Pistol","FollowersCrossLaserPistol","06063E8A","TaleOfTwoWastelands.esm","Energy Weapons","Magical Companion Ammo","40","1.500000","12","30","3.750000","0.100000","0.000000","0.000000","320","0","1","Normal",""],
+["Wazer Wifle","WeapUniqueWazerWifle","06061793","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","40","1.500000","40","30","2.045500","0.000000","1.500000","8.000000","900","25","3","Loud",""],
+["Zhu-Rong v418 Chinese Pistol","WeapUniqueZhuRongChinesePistol","06060C2C","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","18","2.000000","18","10","1.875000","1.000000","4.000000","2.000000","290","0","2","Normal",""],
+["LibertyPrimeWeapBomb","LibertyPrimeWeapBomb","0605932F","TaleOfTwoWastelands.esm","Big Guns","","1000","1.000000","0","12","5.000000","0.000000","10.000000","0.000000","23730","0","0","Normal","1"],
+["Jericho's Chinese Assault Rifle","FollowersJerichoChineseAssaultRifle","06040840","TaleOfTwoWastelands.esm","Guns","Magical Companion Ammo","21","1.000000","21","24","8.000000","1.500000","4.000000","0.000000","340","75","6","Normal",""],
+["Lincoln's Repeater","MS06LincolnsRifle","0603C07A","TaleOfTwoWastelands.esm","Guns","AmmoList44Magnum","60","2.000000","60","15","1.538461","0.000000","3.000000","5.000000","500","75","6","Normal",""],
+["Charon's Combat Shotgun","FollowersCharonShotgun","060372B8","TaleOfTwoWastelands.esm","Guns","Magical Companion Ammo","55","1.000000","7","5","0.750000","0.500000","5.000000","0.000000","70","75","4","Loud",""],
+["Charon's Combat Shotgun Scene","FollowersCharonShotgunScene","0603713D","TaleOfTwoWastelands.esm","Guns","Magical Companion Ammo","20","1.000000","3","5","0.750000","3.000000","5.000000","0.000000","90","75","4","Loud",""],
+["Experimental MIRV","WeapUniqueMIRV","0603422B","TaleOfTwoWastelands.esm","Explosives","AmmoListMiniNuke","400","1.000000","0","8","1.578900","13.000000","13.000000","30.000000","2500","100","10","Loud",""],
+["Liberty Laser","LibertyPrimeLaser","06033FE2","TaleOfTwoWastelands.esm","Energy Weapons","Microfusion Cell","1000","1.000000","0","255","5.999989","1.000000","4.000000","0.000000","9674000","0","0","Normal",""],
+["Blackhawk","WeapUniqueBlackhawk","060303A2","TaleOfTwoWastelands.esm","Guns","AmmoList44Magnum","55","2.000000","55","6","1.875000","0.300000","0.000000","4.000000","500","50","5","Loud",""],
+["Repellent Stick","MS03Repellent","0602D3B7","TaleOfTwoWastelands.esm","Melee Weapons","","1","0.000000","0","1","2.307700","0.000000","0.000000","3.000000","120","0","3","Silent",""],
+["Chinese Officer's Sword","WeapChineseOfficerSword","0602B3CB","TaleOfTwoWastelands.esm","Melee Weapons","","13","1.500000","18","1","2.538461","0.000000","0.000000","3.000000","75","25","4","Silent",""],
+["Rolling Pin","MQ04RollingPin","06029769","TaleOfTwoWastelands.esm","Melee Weapons","","20","0.000000","8","12","2.307692","0.000000","0.000000","2.000000","10","0","2","Silent",""],
+["Slasher Knife","MQ04SlasherKnife","0602869C","TaleOfTwoWastelands.esm","Melee Weapons","","50","1.000000","0","12","2.307692","0.000000","0.000000","1.000000","50","0","1","Normal",""],
+["Frag Mine","MQ04Mine","06028172","TaleOfTwoWastelands.esm","Explosives","","300","1.000000","0","12","1.000000","1.000000","1.000000","1.000000","25","25","1","Normal",""],
+["Assault Rifle","WeapAssaultRifle","0601FFEC","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","18","1.000000","18","24","8.000000","1.500000","0.000000","7.000000","300","25","5","Loud",""],
+["Butch's 10mm Pistol","FollowersButch10mmPistol","0601A334","TaleOfTwoWastelands.esm","Guns","Magical Companion Ammo","22","1.000000","22","12","2.750000","0.800000","0.500000","0.000000","30","25","4","Normal",""],
+["Fawkes' Gatling Laser","FollowersFawkesGatlingLaser","0601A333","TaleOfTwoWastelands.esm","Energy Weapons","Magical Companion Ammo","10","1.000000","10","240","30.000000","0.600000","0.500000","0.000000","611","100","8","Loud",""],
+["Silenced 10mm Pistol","Weap10mmPistolSilenced","06004350","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","20","2.000000","20","12","2.500000","0.500000","0.500000","3.000000","250","25","4","Silent",""],
+["Scoped .44 Magnum","Weap44MagnumScoped","0600434D","TaleOfTwoWastelands.esm","Guns","AmmoList44Magnum","43","2.000000","43","6","1.875000","0.300000","2.000000","4.000000","300","50","4","Loud",""],
+["Short Barrel Shotgun","WeapShotgunSawedOffDC","0600434C","TaleOfTwoWastelands.esm","Guns","AmmoList12Ga","80","1.000000","5","2","2.249999","7.000000","10.000000","4.000000","150","50","4","Loud",""],
+["Rock-It Launcher","WeapRockItLauncher","0600434B","TaleOfTwoWastelands.esm","Guns","RockItLauncherAmmo","50","1.000000","25","1","3.333333","1.000000","5.000000","16.000000","200","0","5","Normal",""],
+["Railway Rifle","WeapRailwayRifle","06004348","TaleOfTwoWastelands.esm","Guns","Railway Spike","70","3.000000","70","8","2.000000","0.750000","1.500000","9.000000","200","75","8","Loud",""],
+["Nuka-Cocktail","WeapNukaCocktail","06004342","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.405405","0.000000","5.000000","0.500000","50","0","2","Silent","1"],
+["Mesmetron","WeapMesmetron","06004339","TaleOfTwoWastelands.esm","Energy Weapons","Mesmetron Power Cell","1","1.000000","0","5","1.034500","0.000000","0.000000","2.000000","500","0","2","Normal",""],
+[".32 Rifle","WeapHuntingRifleDC","06004333","TaleOfTwoWastelands.esm","Guns","TTWAmmoList32Caliber","37","1.000000","37","5","0.750000","0.300000","0.300000","6.000000","150","25","4","Loud",""],
+["Dart Gun","WeapDartGun","0600432A","TaleOfTwoWastelands.esm","Guns","TTWAmmoListDart","6","2.500000","12","1","5.999989","0.000000","1.500000","3.000000","50","0","2","Silent",""],
+["Combat Shotgun","WeapShotgunCombat","06004327","TaleOfTwoWastelands.esm","Guns","AmmoList12Ga","55","1.000000","8","12","2.000000","3.000000","5.000000","7.000000","200","75","6","Loud",""],
+["Chinese Pistol","WeapChinesePistol","06004325","TaleOfTwoWastelands.esm","Guns","AmmoList9mm","12","1.000000","12","10","5.999989","1.000000","4.000000","2.000000","190","0","2","Normal",""],
+["Chinese Assault Rifle","WeapChineseAssaultRifle","0600080B","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","21","1.000000","21","24","8.000000","1.500000","4.000000","7.000000","500","75","6","Loud",""],
+[".32 Pistol","Weap32CaliberPistol","0600080A","TaleOfTwoWastelands.esm","Guns","TTWAmmoList32Caliber","14","1.000000","10","5","6.000000","0.500000","3.000000","2.000000","110","0","3","Normal",""],
+["MFC Cluster","NVDLC05WeapMineMFCCluster","050008C9","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.652174","1.000000","1.000000","0.500000","110","50","2","Silent","1"],
+["MFC Grenade","NVDLC05WeapGrenadeMFC","050008C8","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.652174","1.000000","1.000000","0.500000","15","25","2","Silent","1"],
+["Custom Plasma Pistol","NVDLC05WeapPlasmaPistolCustom","05000855","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","33","2.000000","33","32","1.750000","0.500000","2.200000","3.000000","360","0","2","Normal",""],
+["Custom Plasma Defender","NVDLC05WeapNVPlasmaDefenderCustom","05000853","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","38","2.000000","38","32","2.500000","0.300000","2.000000","2.000000","400","50","2","Normal",""],
+["Custom Laser Pistol","NVDLC05WeapLaserPistolCustom","0500084D","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","28","2.000000","28","30","3.749999","0.100000","0.000000","3.000000","250","0","1","Normal",""],
+["25mm Grenade APW","NVDLC05Weap25mmGrenadeAPWCustom","0500081B","TaleOfTwoWastelands.esm","Explosives","AmmoList25mmGrenade","10","1.000000","0","6","2.500001","0.700000","0.300000","8.000000","420","75","5","Normal",""],
+["Nuka-Grenade","NVDLC05WeapGrenadeNuka","05000818","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","1","0.652174","0.000000","0.000000","0.500000","50","100","2","Silent","1"],
+["Katana","NVDLC05WeapKatanaCustom","05000817","TaleOfTwoWastelands.esm","Melee Weapons","","22","2.000000","22","1","3.230800","0.000000","0.000000","3.000000","250","75","4","Silent",""],
+["Fat Mine","NVDLC05WeapMineFat","05000815","TaleOfTwoWastelands.esm","Explosives","","5","1.000000","0","12","0.326087","5.000000","5.000000","3.250000","275","50","3","Silent","1"],
+["Tin Grenade","NVDLC05WeapGrenadeTin","05000814","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.652174","1.000000","1.000000","0.500000","25","0","2","Silent","1"],
+["5.56mm Pistol","NVDLC05WeapNV556mmPistolCustom","05000813","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","28","2.000000","28","5","2.750000","0.600000","0.000000","5.000000","225","50","6","Normal",""],
+["Battle Rifle","NVDLC05WeapNVBattleRifleCustom","05000812","TaleOfTwoWastelands.esm","Guns","AmmoList308","48","1.000000","48","8","1.928571","0.550000","1.000000","9.500000","300","75","6","Normal",""],
+["Time Bomb, High Yield","NVDLC05WeapNVTimeBombCustom","05000811","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.326100","0.000000","5.000000","0.500000","150","50","1","Silent","1"],
+["Greased Lightning","NVDLC05WeapPowerFistUnique","05000810","TaleOfTwoWastelands.esm","Unarmed","","32","1.000000","32","12","3.000000","0.000000","0.000000","6.000000","1250","50","5","Normal",""],
+["Gehenna","NVDLC05WeapShishkebabUnique","0500080F","TaleOfTwoWastelands.esm","Melee Weapons","","42","2.000000","21","12","2.769231","0.000000","0.000000","3.000000","1250","75","6","Silent",""],
+["Medicine Stick","NVDLC05WeapNVBrushGunUnique","0500080E","TaleOfTwoWastelands.esm","Guns","AmmoList4570","78","1.000000","78","8","1.384615","0.060000","0.000000","5.500000","2500","100","6","Loud",""],
+["Sleepytyme","NVDLC05Weap10mmSubmachineGunUnique","0500080D","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","22","1.000000","22","40","10.000000","1.700000","0.000000","5.000000","1750","50","5","Silent",""],
+["Paciencia","NVDLC05WeapHuntingRifleUnique","0500080C","TaleOfTwoWastelands.esm","Guns","AmmoList308","55","2.000000","110","3","1.184211","0.010000","0.000000","6.200000","2250","50","6","Loud",""],
+["Cleansing Flame","NVDLC05WeapFlamerUnique","0500080B","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListFlamerFuel","15","1.000000","1","100","7.000000","1.500000","1.000000","22.000000","2250","50","7","Normal",""],
+["The Smitty Special","NVDLC05WeapNVPlasmaCasterUnique","0500080A","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","35","1.000000","35","20","7.000000","1.300000","0.000000","20.000000","4000","100","8","Normal",""],
+["Two-Step Goodbye","NVDLC05WeapNVBallisticFistUnique","05000809","TaleOfTwoWastelands.esm","Unarmed","","70","4.000000","10","12","1.090909","0.000000","0.000000","6.000000","2500","100","9","Normal",""],
+["Embrace of the Mantis King!","NVDLC05WeapNVMantisGauntletUnique","05000808","TaleOfTwoWastelands.esm","Unarmed","","42","3.000000","64","12","1.565218","0.000000","0.000000","12.000000","850","75","4","Silent",""],
+["Nuka-Breaker","NVDLC05WeapNVRebarClubUnique","05000807","TaleOfTwoWastelands.esm","Melee Weapons","","50","2.000000","50","1","1.515790","0.000000","0.000000","8.000000","750","50","9","Silent",""],
+["Bozar","NVDLC05WeapNVLightMachineGunUnique","05000806","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","19","1.000000","19","30","15.007500","0.750000","0.000000","15.000000","3000","100","8","Loud",""],
+["Li'l Devil","NVDLC05WeapNV127mmPistolUnique","05000805","TaleOfTwoWastelands.esm","Guns","AmmoList127mm","45","2.000000","45","7","3.249999","0.900000","0.000000","3.200000","2000","75","8","Normal",""],
+["Esther","NVDLC05WeapFatmanUnique","05000804","TaleOfTwoWastelands.esm","Explosives","NVDLC05AmmoListFatMan","475","1.000000","0","1","1.894737","0.500000","2.000000","40.000000","3500","100","8","Loud","1"],
+["Sprtel-Wood 9700","NVDLC05WeapGatlingLaserUnique","05000803","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListElectronChargePack","16","1.000000","16","90","20.000000","0.500000","0.500000","15.000000","4000","100","6","Loud",""],
+["MF Hyperbreeder Alpha","NVDLC05WeapNVRechargerPistolUnique","05000802","TaleOfTwoWastelands.esm","Energy Weapons","Microfusion Breeder","25","2.000000","25","10","7.000000","1.000000","0.300000","7.000000","2000","50","2","Normal",""],
+["Trail Carbine","NVDLC04WeapTrailCarbineNoDrop","0400E1F7","TaleOfTwoWastelands.esm","Guns","AmmoList44Magnum","45","1.000000","45","8","1.846154","0.035000","0.000000","5.500000","390","75","5","Loud",""],
+["Fist of Rawr","NVDLC04WeapDeathclawGauntletUnique","0400CA89","TaleOfTwoWastelands.esm","Unarmed","","50","2.000000","75","12","1.956521","0.000000","0.000000","10.000000","310","100","6","Silent",""],
+["Fist of the North Rawr","NVDLC04WeapDeathclawGauntletUniqueWildWasteland","0400CA88","TaleOfTwoWastelands.esm","Unarmed","","50","2.000000","75","12","1.956521","0.000000","0.000000","10.000000","310","100","6","Silent",""],
+["Heal Zap","NVDLC04WeapUlyssesEyebotHealGun","0400A864","TaleOfTwoWastelands.esm","Energy Weapons","Healing Ammo","1","0.000000","0","30","8.750000","0.010000","0.000000","1.000000","110","0","0","Normal",""],
+["Blood-Nap","NVDLC04WeapBowieKnifeUnique","0400A606","TaleOfTwoWastelands.esm","Melee Weapons","","30","1.500000","45","12","3.692300","0.000000","0.000000","1.000000","200","50","4","Silent",""],
+["SentryBot Minigun","NVDLC04SentryBotMinigun2HR50","04009AEF","TaleOfTwoWastelands.esm","Barter","5mm Round","12","0.000000","0","255","15.000000","2.000000","5.000000","15.000000","1070","0","0","Normal",""],
+["SentryBot Minigun","NVDLC04SentryBotMinigun2HR40","04009AEE","TaleOfTwoWastelands.esm","Barter","5mm Round","11","0.000000","0","255","15.000000","2.000000","5.000000","15.000000","1070","0","0","Normal",""],
+["SentryBot Minigun","NVDLC04SentryBotMinigun2HR30","04009AED","TaleOfTwoWastelands.esm","Barter","5mm Round","10","0.000000","0","255","15.000000","2.000000","5.000000","15.000000","1070","0","0","Normal",""],
+["SentryBot Minigun","NVDLC04SentryBotMinigun2HR20","04009AEC","TaleOfTwoWastelands.esm","Barter","5mm Round","9","0.000000","0","255","15.000000","2.000000","5.000000","15.000000","1070","0","0","Normal",""],
+["Missile Launcher","NVDLC04SentryBotMissileLauncher2HL50","04009AEA","TaleOfTwoWastelands.esm","Big Guns","Missile","120","1.000000","0","3","1.578947","0.500000","10.000000","15.000000","4300","0","0","Normal",""],
+["Missile Launcher","NVDLC04SentryBotMissileLauncher2HL40","04009AE9","TaleOfTwoWastelands.esm","Big Guns","Missile","100","1.000000","0","3","1.578947","0.500000","10.000000","15.000000","4300","0","0","Normal",""],
+["Missile Launcher","NVDLC04SentryBotMissileLauncher2HL30","04009AE8","TaleOfTwoWastelands.esm","Big Guns","Missile","80","1.000000","0","3","1.578947","0.500000","10.000000","15.000000","4300","0","0","Normal",""],
+["Missile Launcher","NVDLC04SentryBotMissileLauncher2HL20","04009AE7","TaleOfTwoWastelands.esm","Big Guns","Missile","60","1.000000","0","3","1.578947","0.500000","10.000000","15.000000","4300","0","0","Normal",""],
+["SentryBot Laser Gatling","NVDLC04SentryBotGatling2HH50","04009AE5","TaleOfTwoWastelands.esm","Energy Weapons","Electron Charge Pack","12","0.000000","8","40","20.000000","0.100000","2.000000","15.000000","1070","0","0","Normal",""],
+["SentryBot Laser Gatling","NVDLC04SentryBotGatling2HH40","04009AE4","TaleOfTwoWastelands.esm","Energy Weapons","Electron Charge Pack","11","0.000000","8","40","20.000000","0.100000","2.000000","15.000000","1070","0","0","Normal",""],
+["SentryBot Laser Gatling","NVDLC04SentryBotGatling2HH30","04009AE3","TaleOfTwoWastelands.esm","Energy Weapons","Electron Charge Pack","10","0.000000","8","40","20.000000","0.100000","2.000000","15.000000","1070","0","0","Normal",""],
+["SentryBot Laser Gatling","NVDLC04SentryBotGatling2HH20","04009AE2","TaleOfTwoWastelands.esm","Energy Weapons","Electron Charge Pack","9","0.000000","8","40","20.000000","0.100000","2.000000","15.000000","1070","0","0","Normal",""],
+["Laser","NVDLC04TurretMarkVILaser2HR50","040099FB","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","9","1.000000","6","200","30.000000","1.500000","3.000000","1.000000","290","0","0","Normal",""],
+["Laser","NVDLC04TurretMarkVILaser2HR40","040099FA","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","8","1.000000","6","200","30.000000","1.500000","3.000000","1.000000","290","0","0","Normal",""],
+["Laser","NVDLC04TurretMarkVILaser2HR30","040099F9","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","7","1.000000","6","200","30.000000","1.500000","3.000000","1.000000","290","0","0","Normal",""],
+["Laser","NVDLC04TurretMarkVILaser2HR20","040099F8","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","6","1.000000","6","200","30.000000","1.500000","3.000000","1.000000","290","0","0","Normal",""],
+["Laser","NVDLC04TurretMarkIVLaser2HR50","040099F7","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","8","1.000000","5","200","25.000000","1.500000","3.000000","1.000000","180","0","0","Normal",""],
+["Laser","NVDLC04TurretMarkIVLaser2HR40","040099F6","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","7","1.000000","5","200","25.000000","1.500000","3.000000","1.000000","180","0","0","Normal",""],
+["Laser","NVDLC04TurretMarkIVLaser2HR30","040099F5","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","6","1.000000","5","200","25.000000","1.500000","3.000000","1.000000","180","0","0","Normal",""],
+["Laser","NVDLC04TurretMarkIVLaser2HR20","040099F4","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","5","1.000000","5","200","25.000000","1.500000","3.000000","1.000000","180","0","0","Normal",""],
+["Laser","NVDLC04TurretMarkIILaser2HR50","040099F3","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","8","1.000000","5","200","15.000000","1.000000","15.000000","1.000000","100","0","0","Normal",""],
+["Laser","NVDLC04TurretMarkIILaser2HR40","040099F2","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","7","1.000000","5","200","15.000000","1.000000","15.000000","1.000000","100","0","0","Normal",""],
+["Laser","NVDLC04TurretMarkIILaser2HR30","040099F1","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","6","1.000000","5","200","15.000000","1.000000","15.000000","1.000000","100","0","0","Normal",""],
+["Laser","NVDLC04TurretMarkIILaser2HR20","040099F0","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","5","1.000000","5","200","15.000000","1.000000","15.000000","1.000000","100","0","0","Normal",""],
+["Old Glory","NVDLC04WeapFlagpoleNPC50","04009753","TaleOfTwoWastelands.esm","Melee Weapons","","85","1.000000","43","1","1.500000","0.000000","0.000000","8.000000","2500","50","7","Silent",""],
+["Old Glory","NVDLC04WeapFlagpoleNPC40","04009752","TaleOfTwoWastelands.esm","Melee Weapons","","75","1.000000","37","1","1.578900","0.000000","0.000000","8.000000","2500","50","7","Silent",""],
+["Old Glory","NVDLC04WeapFlagpoleNPC30","04009751","TaleOfTwoWastelands.esm","Melee Weapons","","73","1.000000","35","1","1.578900","0.000000","0.000000","8.000000","2500","50","7","Silent",""],
+["Old Glory","NVDLC04WeapFlagpoleNPC20","04009750","TaleOfTwoWastelands.esm","Melee Weapons","","65","1.000000","33","1","1.578900","0.000000","0.000000","8.000000","2500","50","7","Silent",""],
+["H&H Tools Nail Gun","NVDLC04WeapNailGun","0400925E","TaleOfTwoWastelands.esm","Guns","Nails","9","2.000000","9","90","14.000000","1.400000","1.000000","4.000000","200","75","2","Silent",""],
+["Industrial Hand","NVDLC04WeapIndustrialHand","04008CB9","TaleOfTwoWastelands.esm","Unarmed","","50","1.000000","40","12","3.200000","0.000000","5.000000","10.000000","250","75","7","Normal",""],
+["Blade of the West","NVDLC04WeapBladeWest","04008B05","TaleOfTwoWastelands.esm","Melee Weapons","","60","1.500000","30","1","2.131579","0.000000","0.000000","12.000000","200","100","9","Silent",""],
+["Shoulder Mounted Machine Gun","NVDLC04WeapSMMG","04008858","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","30","1.000000","20","60","7.000000","0.900000","0.000000","17.000000","750","75","7","Loud",""],
+["Old Glory","NVDLC04WeapFlagpole","040076E0","TaleOfTwoWastelands.esm","Melee Weapons","","45","1.500000","80","1","1.894737","0.000000","0.000000","8.000000","250","50","7","Silent",""],
+["Arc Welder","NVDLC04WeapArcWelder","0400766B","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListElectronChargePack","9","4.000000","1","30","8.000000","0.500000","1.000000","15.000000","370","75","7","Normal",""],
+["Flare Gun","NVDLC04weapflaregun","04004C4E","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListFlamerFuel","10","1.500000","10","10","1.750000","0.500000","2.200000","2.000000","50","0","3","Normal",""],
+["Red Glare","NVDLC04WeapRedGlare","04004C3C","TaleOfTwoWastelands.esm","Explosives","NVDLC04AmmoListRocket","20","0.000000","0","13","4.000000","0.500000","4.000000","20.000000","2500","100","6","Normal",""],
+["Flash Bang","NVDLC04WeapGrenadeFlashBang","04004C35","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","1","0.652200","0.000000","5.000000","0.500000","25","50","4","Silent","1"],
+["Bowie Knife","NVDLC04WeapBowieKnife","040046C7","TaleOfTwoWastelands.esm","Melee Weapons","","23","1.500000","35","12","3.461500","0.000000","0.000000","1.000000","100","75","3","Silent",""],
+["Great Bear Grenade Rifle","NVDLC04WeapGrenadeRifleBLUE","040046C4","TaleOfTwoWastelands.esm","Explosives","AmmoList40mmGrenade","15","1.000000","15","1","2.142857","0.500000","3.000000","5.000000","325","25","3","Normal",""],
+["Red Victory Grenade Rifle","NVDLC04WeapGrenadeRifleRED","040046C3","TaleOfTwoWastelands.esm","Explosives","AmmoList40mmGrenade","15","1.000000","1","1","3.214286","1.000000","3.000000","4.000000","325","25","3","Normal",""],
+["Proton Axe","NVDLC03WeapProtonAxe","03016A4B","TaleOfTwoWastelands.esm","Melee Weapons","","50","1.000000","25","1","1.910527","0.000000","0.000000","8.000000","350","50","5","Silent",""],
+["Elijah's Advanced LAER","NVDLC03WeapLaerUniqueElijah","03015DD3","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","65","1.500000","15","15","2.750000","0.080000","0.500000","4.000000","850","75","4","Normal",""],
+["Laser","NVDLC03Turret02Laser2HR","03015323","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","5","1.000000","5","200","10.000000","1.500000","3.000000","1.000000","180","0","0","Normal",""],
+["Elijah's Jury-Rigged Tesla Cannon","NVDLC03WeapTeslaCannonUniqueElijah","0301199E","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListElectronChargePack","85","2.000000","45","30","1.578947","0.000000","0.000000","8.000000","2350","100","8","Normal",""],
+["Christine's COS Silencer Rifle","NVDLC03WeapSniperRifleUniqueChristine","030112BA","TaleOfTwoWastelands.esm","Guns","AmmoList308","72","2.500000","72","5","1.607100","0.020000","1.000000","5.500000","610","75","6","Silent",""],
+["FIDO","NVDLC03WeapCyberdogGunFido","0300FD3C","TaleOfTwoWastelands.esm","Guns","AmmoList44Magnum","36","0.500000","18","50","7.000000","1.500000","0.000000","27.000000","950","85","9","Loud",""],
+["Saturnite Fist Super-Heated","NVDLC03WeapSaturniteFistHeat","0300F83C","TaleOfTwoWastelands.esm","Unarmed","","55","1.000000","55","12","1.650000","0.000000","0.000000","4.000000","240","55","5","Normal",""],
+["Saturnite Fist","NVDLC03WeapSaturniteFist","0300F806","TaleOfTwoWastelands.esm","Unarmed","","35","1.000000","35","12","1.800000","0.000000","0.000000","4.000000","160","45","4","Normal",""],
+["K9000 Cyberdog Gun","NVDLC03WeapCyberdogGun","0300E39E","TaleOfTwoWastelands.esm","Guns","AmmoList357Magnum","26","0.500000","13","50","7.000000","1.350000","0.000000","27.000000","750","75","8","Loud",""],
+["Sonic Emitter - Tarantula","NVDLC03WeapSonicGunTarantula","0300E389","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","60","1.000000","30","24","1.034483","0.100000","0.500000","2.000000","350","75","2","Normal",""],
+["Sonic Emitter - Robo-Scorpion","NVDLC03WeapSonicGunRoboScorpion","0300E386","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","65","1.000000","30","24","1.034483","0.100000","0.500000","2.000000","350","75","2","Normal",""],
+["Sonic Emitter - Revelation","NVDLC03WeapSonicGunRevelation","0300E381","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","31","1.000000","18","24","1.034500","0.100000","0.500000","2.000000","350","50","2","Normal",""],
+["Sonic Emitter - Gabriel's Bark","NVDLC03WeapSonicGunGabrielsBark","0300E37E","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","55","1.000000","25","24","1.034483","0.100000","0.500000","2.000000","350","50","2","Normal",""],
+["Sonic Emitter - Opera Singer","NVDLC03WeapSonicGunOperaSinger","0300E1B8","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","55","1.000000","25","24","1.034500","0.100000","0.500000","2.000000","350","50","2","Normal",""],
+["X-2 Antenna","NVDLC03WeapAntenna","0300C297","TaleOfTwoWastelands.esm","Melee Weapons","","65","1.000000","23","1","1.083700","0.000000","0.000000","15.000000","600","75","7","Normal",""],
+["Protonic Inversal Throwing Axe","NVDLC03WeapProtonAxeInversalThrown","0300BB5F","TaleOfTwoWastelands.esm","Melee Weapons","","60","1.000000","29","1","0.878000","0.000000","0.000000","1.000000","200","25","1","Silent","1"],
+["Proton Throwing Axe","NVDLC03WeapProtonAxeThrown","0300BB5E","TaleOfTwoWastelands.esm","Melee Weapons","","40","1.000000","29","1","0.804900","0.000000","0.000000","1.000000","100","25","1","Silent","1"],
+["LAER","NVDLC03WeapLaer","0300B9CF","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","65","1.500000","15","20","2.500000","0.080000","0.500000","4.000000","800","75","4","Normal",""],
+["Dr. Klein's Glove","NVDLC03WeapGlovesDrKleinL","0300A13E","TaleOfTwoWastelands.esm","Unarmed","","34","3.000000","5","12","1.363600","0.000000","0.000000","4.000000","250","45","3","Normal",""],
+["Dr. Mobius' Glove","NVDLC03WeapGlovesDrMobiusL","0300A138","TaleOfTwoWastelands.esm","Unarmed","","28","2.000000","5","12","1.363600","0.000000","0.000000","3.000000","350","35","2","Normal",""],
+["Sterilizer Glove","NVDLC03WeapGlovesSterilizer","0300A135","TaleOfTwoWastelands.esm","Unarmed","","21","1.000000","5","12","1.363600","0.000000","0.000000","3.000000","150","55","2","Normal",""],
+["Corrosive Glove","NVDLC03WeapGlovesCorrosive","0300A130","TaleOfTwoWastelands.esm","Unarmed","","21","1.000000","5","12","1.090909","0.000000","0.000000","4.000000","150","55","2","Normal",""],
+["Scientist Glove","NVDLC03WeapGlovesScientist","03009FFD","TaleOfTwoWastelands.esm","Unarmed","","21","1.500000","5","12","1.363600","0.000000","0.000000","2.000000","100","25","2","Normal",""],
+["Protonic Inversal Axe","NVDLC03WeapProtonAxeInversal","03009701","TaleOfTwoWastelands.esm","Melee Weapons","","58","1.000000","45","1","1.814999","0.000000","0.000000","8.000000","400","55","5","Silent",""],
+["Joshua's Pistol Whippin' .45","NVDLC02Weap45AutoPistolUniqueMelee","02010E1F","TaleOfTwoWastelands.esm","Melee Weapons","","20","0.000000","20","12","2.307700","0.000000","0.000000","1.000000","10","0","2","Silent",""],
+["A Light Shining in Darkness","NVDLC02Weap45AutoPistolUniqueNPC","020108C7","TaleOfTwoWastelands.esm","Guns","NVDLC02AmmoList45Auto","50","3.000000","50","6","4.374999","0.350000","0.000000","1.200000","450","75","3","Normal",""],
+["Poisoned Shishkebab","NVDLC02WeapNPCShishkebabPoison","0200F91D","TaleOfTwoWastelands.esm","Melee Weapons","","40","2.000000","20","12","2.307692","0.000000","0.000000","3.000000","250","75","6","Silent",""],
+["Poisoned Cleaver","NVDLC02WeapNPCCleaverPoison","0200F91C","TaleOfTwoWastelands.esm","Melee Weapons","","7","1.000000","7","1","2.538461","0.000000","0.000000","2.000000","20","0","2","Silent",""],
+["Poisoned Machete","NVDLC02WeapNPCMachetePoison","0200F91B","TaleOfTwoWastelands.esm","Melee Weapons","","11","1.500000","11","1","3.000000","0.000000","0.000000","2.000000","50","25","3","Silent",""],
+["Poisoned Hatchet","NVDLC02WeapNPCHatchetPoison","0200F91A","TaleOfTwoWastelands.esm","Melee Weapons","","16","1.000000","16","1","2.538461","0.000000","0.000000","2.000000","75","25","2","Silent",""],
+["Poisoned Fire Axe","NVDLC02WeapNPCFireaxePoison","0200F919","TaleOfTwoWastelands.esm","Melee Weapons","","55","1.000000","27","1","1.499999","0.000000","0.000000","8.000000","250","75","5","Silent",""],
+["War Club","NVDLC02WeapWarClubLvl1","0200F1E1","TaleOfTwoWastelands.esm","Melee Weapons","","19","1.000000","19","12","3.461538","0.000000","10.000000","3.000000","75","25","2","Silent",""],
+["War Club","NVDLC02WeapWarClubLvl5","0200F1DB","TaleOfTwoWastelands.esm","Melee Weapons","","37","1.000000","31","12","3.461538","0.000000","10.000000","3.000000","75","25","2","Silent",""],
+["War Club","NVDLC02WeapWarClubLvl4","0200F1DA","TaleOfTwoWastelands.esm","Melee Weapons","","31","1.000000","26","12","3.461538","0.000000","10.000000","3.000000","75","25","2","Silent",""],
+["War Club","NVDLC02WeapWarClubLvl3","0200F1D9","TaleOfTwoWastelands.esm","Melee Weapons","","26","1.000000","22","12","3.461538","0.000000","10.000000","3.000000","75","25","2","Silent",""],
+["War Club","NVDLC02WeapWarClubLvl2","0200F1D8","TaleOfTwoWastelands.esm","Melee Weapons","","22","1.000000","19","12","3.461538","0.000000","10.000000","3.000000","75","25","2","Silent",""],
+["Follows-Chalk's War Club","NVDLC02WeapWarClubFollowsChalk","0200E8EE","TaleOfTwoWastelands.esm","Melee Weapons","","24","1.000000","24","12","3.461538","0.000000","10.000000","3.000000","75","25","2","Silent",""],
+["War Club","NVDLC02WeapEVMockCombat","0200E6E3","TaleOfTwoWastelands.esm","Melee Weapons","","15","1.000000","15","12","2.307692","0.000000","10.000000","3.000000","40","0","0","Silent",""],
+["Survivalist's Rifle","NVDLC02WeapServiceRifleUnique","0200DD79","TaleOfTwoWastelands.esm","Guns","AmmoList127mm","62","1.000000","48","10","3.900004","0.080000","0.000000","8.500000","800","75","4","Normal",""],
+["Compliance Regulator","NVDLC02WeapComplianceRegulator","0200C626","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","8","1.500000","12","30","3.750000","0.100000","0.000000","3.000000","175","0","1","Normal",""],
+["She's Embrace","NVDLC02WeapYaoGuaiGauntletUnique","0200BCB8","TaleOfTwoWastelands.esm","Unarmed","","25","3.000000","37","12","1.760869","0.000000","0.000000","10.000000","420","50","4","Silent",""],
+["Yao Guai Gauntlet","NVDLC02WeapYaoGuaiGauntlet","0200BCB7","TaleOfTwoWastelands.esm","Unarmed","","20","2.500000","30","12","1.630434","0.000000","0.000000","10.000000","150","50","4","Silent",""],
+["Tomahawk","NVDLC02WeapTomahawk","0200BCB6","TaleOfTwoWastelands.esm","Melee Weapons","","30","1.000000","30","1","0.658537","0.000000","0.000000","0.500000","75","50","3","Silent","1"],
+["War Club","NVDLC02WeapWarClub","0200BCB5","TaleOfTwoWastelands.esm","Melee Weapons","","19","1.000000","19","1","3.000000","0.000000","0.000000","3.000000","75","25","2","Silent",""],
+["Fire Bomb","NVDLC02WeapFireBomb","0200BCB4","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","1","0.405400","1.000000","2.000000","0.500000","20","50","2","Silent","1"],
+["Salt-Upon-Wounds' Power Fist","NVDLC02WeapPowerFistUnique","0200A38D","TaleOfTwoWastelands.esm","Unarmed","","45","1.000000","45","12","1.363637","0.000000","0.000000","6.000000","250","50","6","Normal",""],
+["A Light Shining in Darkness","NVDLC02Weap45AutoPistolUnique","02009DBE","TaleOfTwoWastelands.esm","Guns","NVDLC02AmmoList45Auto","33","2.000000","33","6","4.374999","0.550000","0.000000","1.200000","1000","75","3","Normal",""],
+[".45 Auto Submachine Gun","NVDLC02Weap45AutoSubmachineGun","0200996C","TaleOfTwoWastelands.esm","Guns","NVDLC02AmmoList45Auto","26","1.000000","26","30","11.000000","2.300000","0.000000","11.000000","375","75","6","Normal",""],
+[".45 Auto Pistol","NVDLC02Weap45AutoPistol","02008E1A","TaleOfTwoWastelands.esm","Guns","NVDLC02AmmoList45Auto","29","1.000000","29","7","2.750000","0.800000","0.000000","1.500000","175","25","3","Normal",""],
+["Cosmic Knife Clean","NVDLC01WeapSpaceAgeKnifeClean","01012209","TaleOfTwoWastelands.esm","Melee Weapons","","15","1.200000","15","12","3.000000","0.000000","0.000000","1.000000","50","0","1","Silent",""],
+["Knife Spear Clean","NVDLC01WeapKnifeSpearClean","01012208","TaleOfTwoWastelands.esm","Melee Weapons","","25","1.200000","25","1","1.799999","0.000000","0.000000","3.000000","55","25","2","Silent",""],
+["Throwing Knife Spear","NVDLC01WeapThrowingSpearGhost50","010117FC","TaleOfTwoWastelands.esm","Melee Weapons","","145","1.000000","7","12","0.600000","0.000000","1.000000","0.500000","25","25","1","Silent","1"],
+["Throwing Knife Spear","NVDLC01WeapThrowingSpearGhost40","010117FB","TaleOfTwoWastelands.esm","Melee Weapons","","122","1.000000","7","12","0.600000","0.000000","1.000000","0.500000","25","25","1","Silent","1"],
+["Throwing Knife Spear","NVDLC01WeapThrowingSpearGhost30","010117FA","TaleOfTwoWastelands.esm","Melee Weapons","","106","1.000000","7","12","0.600000","0.000000","1.000000","0.500000","25","25","1","Silent","1"],
+["Throwing Knife Spear","NVDLC01WeapThrowingSpearGhost20","010117F9","TaleOfTwoWastelands.esm","Melee Weapons","","75","1.000000","7","12","0.600000","0.000000","1.000000","0.500000","25","25","1","Silent","1"],
+["Throwing Knife Spear","NVDLC01WeapThrowingSpearGhost10","010117F8","TaleOfTwoWastelands.esm","Melee Weapons","","57","1.000000","7","12","0.600000","0.000000","1.000000","0.500000","25","25","1","Silent","1"],
+["Throwing Knife Spear","NVDLC01WeapThrowingSpearGhost1","010117F7","TaleOfTwoWastelands.esm","Melee Weapons","","35","1.000000","7","12","0.600000","0.000000","1.000000","0.500000","25","25","1","Silent","1"],
+["Knife Spear","NVDLC01WeapKnifeSpearGhost50","010117EE","TaleOfTwoWastelands.esm","Melee Weapons","","81","1.000000","17","1","2.368422","0.000000","0.000000","3.000000","55","25","2","Silent",""],
+["Knife Spear","NVDLC01WeapKnifeSpearGhost40","010117ED","TaleOfTwoWastelands.esm","Melee Weapons","","62","1.000000","17","1","2.368422","0.000000","0.000000","3.000000","55","25","2","Silent",""],
+["Knife Spear","NVDLC01WeapKnifeSpearGhost30","010117EC","TaleOfTwoWastelands.esm","Melee Weapons","","45","1.000000","17","1","2.368422","0.000000","0.000000","3.000000","55","25","2","Silent",""],
+["Knife Spear","NVDLC01WeapKnifeSpearGhost20","010117EB","TaleOfTwoWastelands.esm","Melee Weapons","","30","1.000000","17","1","2.368422","0.000000","0.000000","3.000000","55","25","2","Silent",""],
+["Knife Spear","NVDLC01WeapKnifeSpearGhost10","010117EA","TaleOfTwoWastelands.esm","Melee Weapons","","25","1.000000","17","1","2.368422","0.000000","0.000000","3.000000","55","25","2","Silent",""],
+["Knife Spear","NVDLC01WeapKnifeSpearGhost1","010117E9","TaleOfTwoWastelands.esm","Melee Weapons","","20","1.000000","17","1","2.368422","0.000000","0.000000","3.000000","55","25","2","Silent",""],
+["Demolition Charge","NVDLC01WeapDemoCharge","0101140B","TaleOfTwoWastelands.esm","Explosives","","2","1.000000","0","12","0.500000","1.000000","1.000000","1.500000","25","0","1","Silent","1"],
+["Cosmic Knife Super-Heated","NVDLC01WeapSpaceAgeKnifeHeated","01010589","TaleOfTwoWastelands.esm","Melee Weapons","","14","5.000000","14","12","3.000000","0.000000","0.000000","1.000000","50","0","1","Silent",""],
+["Starlet's Hand Wraps","NVDLC01WeapStarletFists","0100E8A4","TaleOfTwoWastelands.esm","Unarmed","","15","1.000000","30","12","1.263158","0.000000","0.000000","6.000000","10","0","1","Normal",""],
+["Laser","NVDLC01VaultTurret01Laser","0100CDB6","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","5","1.000000","5","200","15.000000","1.000000","15.000000","1.000000","100","0","0","Normal",""],
+["Laser","NVDLC01VaultTurret02Laser","0100CDB5","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","5","1.000000","5","200","25.000000","1.500000","3.000000","1.000000","180","0","0","Normal",""],
+["Laser","NVDLC01VaultTurret03Laser","0100CDB4","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","6","1.000000","6","200","30.000000","1.500000","3.000000","1.000000","290","0","0","Normal",""],
+["Gas Bomb","NVDLC01weapgasbomb","0100C45D","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","1","0.326087","0.000000","5.000000","5.000000","50","50","1","Silent","1"],
+["Cosmic Knife","NVDLC01WeapSpaceAgeKnife","0100BD09","TaleOfTwoWastelands.esm","Melee Weapons","","12","1.000000","12","12","3.000000","0.000000","0.000000","1.000000","35","0","1","Silent",""],
+["Police Pistol","NVDLC01WeapPolicePistol","0100BBC2","TaleOfTwoWastelands.esm","Guns","AmmoList357Magnum","30","1.000000","45","6","2.000000","0.500000","3.000000","3.000000","120","0","4","Normal",""],
+["Automatic Rifle","NVDLC01WeapAutomaticRifle","0100A7A9","TaleOfTwoWastelands.esm","Guns","AmmoList308","50","1.500000","50","20","6.000000","1.600000","1.600000","16.000000","900","100","8","Loud",""],
+["Holorifle","NVDLC01WeapHolorifle","010092EF","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","80","1.000000","80","4","1.111111","0.400000","3.000000","8.000000","600","50","4","Normal",""],
+["Gas Tank","NVDLC01WeapGhostGasBomb","0100119F","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","1","0.652174","0.000000","5.000000","20.000000","20","25","2","Silent","1"],
+["Throwing Knife Spear","NVDLC01WeapThrowingKnifeSpear","0100119E","TaleOfTwoWastelands.esm","Melee Weapons","","42","1.000000","42","12","0.480000","0.000000","1.000000","0.650000","25","25","1","Silent","1"],
+["Bear Trap Fist","NVDLC01WeapBearTrapFist","0100119D","TaleOfTwoWastelands.esm","Unarmed","","27","1.000000","27","12","1.090900","0.000000","0.000000","6.000000","80","50","5","Normal",""],
+["Knife Spear","NVDLC01WeapKnifeSpear","01000FBE","TaleOfTwoWastelands.esm","Melee Weapons","","20","1.000000","20","1","1.799999","0.000000","0.000000","3.000000","55","25","2","Silent",""],
+["Arcade's Ripper","WeapRipperArcade","00176E5D","TaleOfTwoWastelands.esm","Melee Weapons","","50","1.000000","5","12","1.000000","0.000000","10.000000","0.000000","100","50","3","Normal",""],
+["Veronica's 10mm Pistol","Weap10mmPistolVeronica","00176E5B","TaleOfTwoWastelands.esm","Guns","Magical Companion Ammo","22","1.000000","22","12","2.750000","0.800000","0.500000","0.000000","225","25","4","Normal",""],
+["Veronica's Power Fist","WeapPowerFistVeronica","00176E5A","TaleOfTwoWastelands.esm","Unarmed","","40","1.000000","40","12","1.090909","0.000000","0.000000","0.000000","100","50","5","Normal",""],
+["Boone's Machete","WeapNVMacheteBoone","00176E59","TaleOfTwoWastelands.esm","Melee Weapons","","11","1.500000","11","1","3.000000","0.000000","0.000000","0.000000","50","25","3","Silent",""],
+["Raul's Lead Pipe","WeapLeadPipeRaul","00176E58","TaleOfTwoWastelands.esm","Melee Weapons","","22","1.000000","22","12","2.538461","0.000000","10.000000","3.000000","75","50","5","Silent",""],
+["Raul's .44 Magnum Revolver","WeapNV44RevolverRaul","00176E57","TaleOfTwoWastelands.esm","Guns","Magical Companion Ammo","36","1.000000","36","6","1.875000","0.700000","0.000000","3.500000","250","50","5","Loud",""],
+["Cass's Combat Knife","WeapKnifeCombatCass","00176E56","TaleOfTwoWastelands.esm","Melee Weapons","","15","2.000000","15","12","3.230769","0.000000","0.000000","0.000000","50","50","3","Silent",""],
+["Cass's Caravan Shotgun","WeapNVCaravanShotgunCass","00176E55","TaleOfTwoWastelands.esm","Guns","Magical Companion Ammo","80","1.000000","8","2","3.214286","1.700000","0.000000","0.000000","225","25","3","Loud",""],
+["Arcade's Plasma Defender","WeapNVPlasmaDefenderArcade","00174094","TaleOfTwoWastelands.esm","Energy Weapons","Magical Companion Ammo","38","1.000000","38","32","2.500000","0.300000","2.000000","0.000000","300","50","2","Normal",""],
+["Lily's Assault Carbine","WeapNVAssaultCarbineLily","00174093","TaleOfTwoWastelands.esm","Guns","Magical Companion Ammo","18","1.000000","18","24","12.000000","1.200000","4.000000","0.000000","395","75","3","Normal",""],
+["Broad Machete","WeapPreordMachete","001735E5","TaleOfTwoWastelands.esm","Melee Weapons","","15","2.000000","15","12","3.230800","0.000000","0.000000","1.000000","100","25","3","Silent",""],
+["Mercenary's Grenade Rifle","WeapPreordGrenadeRifle","001735E4","TaleOfTwoWastelands.esm","Explosives","AmmoList40mmGrenade","10","1.000000","1","1","2.142857","1.000000","3.000000","5.000000","225","25","3","Normal",""],
+["Sturdy Caravan Shotgun","WeapPreordCaravanShotgun","001735E3","TaleOfTwoWastelands.esm","Guns","AmmoList20Ga","50","1.000000","7","2","3.214286","1.800000","0.000000","3.000000","200","25","3","Loud",""],
+["Weathered 10mm Pistol","WeapPreord10mmPistol","001735D4","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","24","1.000000","24","12","2.750000","0.800000","0.500000","3.000000","250","25","4","Normal",""],
+["Anti-Materiel Rifle","VHDOliverSniperAntiMaterielRifle","001724F2","TaleOfTwoWastelands.esm","Guns","AmmoList50MG","150","1.000000","80","8","0.447761","0.000000","0.000000","20.000000","3000","100","8","Loud",""],
+["Slave's Burden","WeapNVSlaveBackPack","00171B48","TaleOfTwoWastelands.esm","Unarmed","","16","4.000000","1","1","1.578948","0.500000","1.000000","400.000000","25","1","7","Normal",""],
+["Energy Zap","EDEZapGunUpgrade","001694DF","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","30","2.500000","30","30","8.749998","0.010000","0.000000","0.000000","110","0","0","Normal",""],
+["Electrical Zap","EDEStunBatonUpgrade","001694DE","TaleOfTwoWastelands.esm","Energy Weapons","","15","1.000000","8","1","2.500000","0.000000","0.000000","1.000000","110","0","0","Normal",""],
+["Gladiator Machete","WeapNVMacheteGladiator","00167685","TaleOfTwoWastelands.esm","Melee Weapons","","11","1.500000","11","1","3.000000","0.000000","0.000000","2.000000","20","25","3","Silent",""],
+["Big Boomer","WeapShotgunSawedOffUnique","001673CD","TaleOfTwoWastelands.esm","Guns","AmmoList12Ga","120","1.000000","9","2","2.578125","3.500000","10.000000","4.000000","250","50","4","Loud",""],
+["Stun Baton","EDEStunBaton","00166B95","TaleOfTwoWastelands.esm","Energy Weapons","","12","1.000000","8","1","2.307700","0.000000","0.000000","1.000000","110","0","0","Silent",""],
+["Electrical Zap","EDEZapGun","00166B94","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","25","2.000000","25","12","3.749999","0.020000","0.000000","0.000000","110","0","0","Normal",""],
+["Laser","HVTurret03Laser","00166B59","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","40","1.000000","50","200","4.000000","1.000000","2.000000","1.000000","290","0","0","Normal",""],
+["Chance's Knife","WeapNVKnifeCombatUnique","00162C92","TaleOfTwoWastelands.esm","Melee Weapons","","22","2.000000","22","12","4.153846","0.000000","0.000000","1.000000","90","50","3","Silent",""],
+["CZ57 Avenger","WeapNVMinigunUnique","001629B6","TaleOfTwoWastelands.esm","Guns","AmmoList5mm","13","0.500000","13","120","30.000000","0.550000","0.000000","18.000000","3000","100","10","Loud",""],
+["Annabelle","WeapNVMissileLauncherUnique","00162019","TaleOfTwoWastelands.esm","Explosives","AmmoListMissile","150","0.000000","0","1","1.894737","0.020000","4.000000","15.000000","1500","75","5","Normal",""],
+["Throwing Knife","WeapNVThrowingKnife","00161246","TaleOfTwoWastelands.esm","Melee Weapons","","15","2.000000","15","12","3.214286","0.000000","0.000000","0.500000","10","0","1","Silent","1"],
+["Mercy","WeapNVGrenadeMachinegunUnique","0015FFF4","TaleOfTwoWastelands.esm","Explosives","AmmoList40mmGrenade","5","50.000000","0","18","3.100000","1.000000","3.000000","15.000000","3000","100","8","Normal",""],
+["Abilene Kid LE BB Gun","WeapNVBBGunUnique","0015FF5D","TaleOfTwoWastelands.esm","Guns","BB","4","1.500000","70","100","1.538461","0.500000","1.500000","2.000000","50","0","1","Silent",""],
+["Chainsaw","WeapNVChainsaw","0015FE44","TaleOfTwoWastelands.esm","Melee Weapons","","80","1.000000","8","1","1.000000","0.000000","10.000000","20.000000","280","75","7","Normal",""],
+["Thermic Lance","WeapThermicLance","0015C881","TaleOfTwoWastelands.esm","Melee Weapons","","100","1.000000","10","1","1.000000","0.000000","10.000000","20.000000","250","100","7","Normal",""],
+["Zap Glove","WeapNVZapGlove","0015BA78","TaleOfTwoWastelands.esm","Unarmed","","35","1.000000","35","12","1.636364","0.000000","0.000000","6.000000","250","75","4","Normal",""],
+["Paladin Toaster","WeapNVZapGloveUnique","0015BA72","TaleOfTwoWastelands.esm","Unarmed","","41","1.000000","41","12","1.636364","0.000000","0.000000","6.000000","750","75","4","Normal",""],
+["Ballistic Fist","WeapNVBallisticFist","0015BA03","TaleOfTwoWastelands.esm","Unarmed","","80","1.000000","80","12","1.090909","0.000000","0.000000","6.000000","250","100","9","Normal",""],
+["YCS/186","WeapNVGaussRifleUnique","0015B38D","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","140","2.000000","70","4","3.000001","0.027500","0.000000","8.000000","600","75","5","Loud",""],
+["Tesla-Beaton Prototype","WeapNVTeslaCannonUnique","0015A47F","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListElectronChargePack","90","2.000000","45","24","1.342105","0.080000","0.000000","8.000000","2500","100","8","Normal",""],
+["Gauss Rifle","WeapNVGaussRifle","0015837B","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","120","2.000000","60","5","3.000001","0.030000","0.000000","7.000000","500","75","5","Loud",""],
+["The Humble Cudgel","WeapNVLeadPipeUnique","00157BCA","TaleOfTwoWastelands.esm","Melee Weapons","","26","1.000000","26","12","2.769231","0.000000","10.000000","3.000000","100","50","5","Silent",""],
+["Knock Knock","WeapNVFireaxeUnique","00156F7C","TaleOfTwoWastelands.esm","Melee Weapons","","66","1.000000","33","1","1.799999","0.000000","0.000000","8.000000","150","75","5","Silent",""],
+["Oh, Baby!","WeapSuperSledgeUnique","00156968","TaleOfTwoWastelands.esm","Melee Weapons","","80","1.000000","40","1","1.736843","0.000000","0.000000","20.000000","240","100","8","Normal",""],
+["Love and Hate","WeapNVSpikedKnucklesUnique","001568E6","TaleOfTwoWastelands.esm","Unarmed","","30","1.000000","30","12","2.526314","0.000000","0.000000","1.000000","75","50","3","Silent",""],
+["Pushy","WeapNVDisplacerGloveUnique","00155E6D","TaleOfTwoWastelands.esm","Unarmed","","60","1.000000","60","12","1.472728","0.000000","0.000000","6.000000","200","100","2","Normal",""],
+["Displacer Glove","WeapNVDisplacerGlove","00155E66","TaleOfTwoWastelands.esm","Unarmed","","50","1.000000","50","12","1.363637","0.000000","0.000000","6.000000","150","100","4","Normal",""],
+["Machete Gladius","WeapNVMacheteGladius","0015430B","TaleOfTwoWastelands.esm","Melee Weapons","","28","1.500000","28","1","3.000000","0.000000","0.000000","2.000000","110","25","4","Silent",""],
+["Mantis Gauntlet","WeapNVMantisGauntlet","001524B3","TaleOfTwoWastelands.esm","Unarmed","","30","3.000000","30","12","2.021738","0.000000","0.000000","10.000000","125","75","4","Silent",""],
+["Cram Opener","WeapBladedGauntletUnique","00151D0C","TaleOfTwoWastelands.esm","Unarmed","","28","2.000000","44","12","1.695653","0.000000","0.000000","10.000000","100","25","5","Silent",""],
+["Bladed Gauntlet","WeapBladedGauntlet","001519E0","TaleOfTwoWastelands.esm","Unarmed","","25","2.000000","40","12","1.565218","0.000000","0.000000","10.000000","75","25","5","Silent",""],
+["Holy Frag Grenade","WeapNVGrenadeFragHoly","0014EA5A","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.652174","0.000000","5.000000","0.500000","50","0","2","Silent","1"],
+["Throwing Hatchet","WeapNVThrowingHatchet","0014DE1D","TaleOfTwoWastelands.esm","Melee Weapons","","30","1.000000","30","1","0.878049","0.000000","0.000000","2.000000","20","25","1","Silent","1"],
+["Stun Grenade","WeapNVGrenadeStun","0014DDDF","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.652174","1.000000","2.000000","0.500000","20","25","2","Silent","1"],
+["Incendiary Grenade","WeapNVGrenadeIncendiary","0014DDDE","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","1","0.652200","1.000000","2.000000","0.500000","20","50","2","Silent","1"],
+["Throwing Spear","WeapNVThrowingSpear","0014D2AC","TaleOfTwoWastelands.esm","Melee Weapons","","50","1.000000","50","12","0.600000","0.000000","1.000000","0.500000","20","25","1","Silent","1"],
+["Chopper","WeapNVCleaverUnique","0014D2AA","TaleOfTwoWastelands.esm","Melee Weapons","","14","2.000000","14","1","3.923077","0.000000","0.000000","2.000000","80","0","2","Silent",""],
+["Figaro","WeapNVStraightRazorUnique","0014D2A7","TaleOfTwoWastelands.esm","Melee Weapons","","8","4.000000","16","1","4.153846","0.000000","10.000000","1.000000","40","0","1","Silent",""],
+["AER14 Prototype","WeapLaserRifleUnique","001479B3","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","40","2.000000","40","24","3.000007","0.022500","0.000000","8.500000","1000","25","3","Normal",""],
+["Blade of the East","WeapNVLegateSword2","00143FBA","TaleOfTwoWastelands.esm","Melee Weapons","","65","1.000000","30","1","1.500000","0.000000","0.000000","12.000000","45","100","9","Silent",""],
+["Thump-Thump","WeapNVGrenadeRifleUnique","001429E2","TaleOfTwoWastelands.esm","Explosives","AmmoList40mmGrenade","20","1.000000","1","1","2.785714","0.800000","3.000000","5.500000","300","25","3","Normal",""],
+["Gobi Campaign Scout Rifle","WeapNVSniperRifleUnique","001429E1","TaleOfTwoWastelands.esm","Guns","AmmoList308","65","2.000000","90","6","2.142857","0.018000","0.000000","4.500000","620","75","6","Loud",""],
+["12.7mm Submachine Gun","WeapNV127mmSubmachineGun","001429D1","TaleOfTwoWastelands.esm","Guns","AmmoList127mm","36","1.000000","36","21","9.000000","2.000000","0.000000","5.000000","510","100","6","Loud",""],
+["Combat Knife","WeapKnifeAssassin","0013F76F","TaleOfTwoWastelands.esm","Melee Weapons","","15","2.000000","15","12","3.230769","0.000000","0.000000","1.000000","50","0","0","Silent",""],
+["Mean Super Sledge","WeapSuperSledgeMeanie","0013E540","TaleOfTwoWastelands.esm","Melee Weapons","","85","1.000000","40","1","1.499999","0.000000","0.000000","20.000000","180","100","8","Normal",""],
+["Blade of the East","WeapNVLegateSword","0013E4DE","TaleOfTwoWastelands.esm","Melee Weapons","","65","1.000000","35","1","1.578900","0.000000","0.000000","12.000000","45","100","9","Silent",""],
+["Time Bomb","WeapNVTimeBomb","0013D534","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.326087","0.000000","5.000000","0.500000","75","50","1","Silent","1"],
+["R9000 Camera","NVCamera","0013621D","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","22","1.500000","22","16","1.050000","0.500000","2.200000","3.000000","25","0","2","Normal",""],
+["Cattle Prod","WeapCattleProd","0013316D","TaleOfTwoWastelands.esm","Melee Weapons","","5","2.000000","5","1","2.307700","0.000000","0.000000","3.000000","65","75","4","Silent",""],
+["That Gun","WeapNVThatGun","00133058","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","30","2.500000","30","5","3.000000","0.500000","0.000000","5.000000","325","50","6","Normal",""],
+["Boxing Tape","WeapNVBoxingTape","0012D852","TaleOfTwoWastelands.esm","Unarmed","","4","1.000000","4","12","1.263157","0.000000","0.000000","0.250000","10","0","1","Normal",""],
+["Recompense of the Fallen","WeapNVDogTagFistUnique","0012ADB8","TaleOfTwoWastelands.esm","Unarmed","","25","1.000000","25","1","1.894736","0.000000","0.000000","3.000000","55","0","1","Silent",""],
+["Ranger Sequoia","WeapNVRangerSequoia","00129A44","TaleOfTwoWastelands.esm","Guns","AmmoList4570","62","1.500000","62","5","1.687500","0.100000","4.000000","4.000000","350","75","6","Loud",""],
+["Liberator","WeapNVMacheteDeadSea","00127E45","TaleOfTwoWastelands.esm","Melee Weapons","","18","3.000000","18","1","3.461538","0.000000","0.000000","2.000000","100","25","3","Silent",""],
+["Mysterious Magnum","WeapNV44RevolverUnique","00127C6C","TaleOfTwoWastelands.esm","Guns","AmmoList44Magnum","42","1.000000","42","6","2.437500","0.500000","0.000000","4.000000","320","50","6","Loud",""],
+["Van Graff Laser Rifle","VFSWeapLaserRifleVanGraff","001251CD","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","26","1.500000","15","24","3.081825","0.025000","0.000000","8.000000","500","0","3","Normal",""],
+["Van Graff Plasma Rifle","VFSWeapPlasmaRifleVanGraff","001251CC","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","47","2.000000","32","24","1.400000","0.200000","0.200000","8.000000","650","0","3","Loud",""],
+["C-4 Plastic Explosive","WeapNVC4PlasticExplosive","001221C1","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.326087","0.000000","5.000000","0.500000","100","50","1","Silent","1"],
+["Multiplas Rifle","WeapNVMultiPlasRifle","00121168","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","105","1.000000","34","30","1.000000","1.500000","1.500000","7.000000","750","50","4","Loud",""],
+["Recharger Rifle","WeapNVRechargerRifle","00121154","TaleOfTwoWastelands.esm","Energy Weapons","Microfusion Breeder","12","1.500000","12","7","4.260000","0.020000","0.000000","15.000000","110","0","5","Loud",""],
+["Brush Gun","WeapNVBrushGun","00121148","TaleOfTwoWastelands.esm","Guns","AmmoList4570","75","1.000000","75","6","1.230769","0.060000","0.000000","5.000000","490","100","6","Loud",""],
+["Shovel","WeapShovel","0011E46F","TaleOfTwoWastelands.esm","Melee Weapons","","12","3.000000","20","12","1.650000","0.000000","0.000000","3.000000","55","0","3","Silent",""],
+["Hatchet","WeapNVHatchet","0011A8E4","TaleOfTwoWastelands.esm","Melee Weapons","","16","1.000000","16","1","2.538461","0.000000","0.000000","2.000000","25","25","2","Silent",""],
+["Fire Axe","WeapNVFireaxe","0011A8B9","TaleOfTwoWastelands.esm","Melee Weapons","","55","1.000000","27","1","1.578948","0.000000","0.000000","8.000000","100","75","5","Silent",""],
+["Dress Cane","WeapNVDressCane","0011A8A0","TaleOfTwoWastelands.esm","Melee Weapons","","22","1.000000","35","12","2.307700","0.000000","10.000000","3.000000","40","50","2","Silent",""],
+["Codac R9000","NVWeapMS22Camera","0011A208","TaleOfTwoWastelands.esm","Guns","Camera Film","0","0.000000","65","24","2.500000","0.300000","0.300000","0.000000","25","0","0","Silent",""],
+["Gojira Flame","NVGojiraFlame2HL","0011324C","TaleOfTwoWastelands.esm","Big Guns","Flamer Fuel","400","1.000000","0","24","8.000000","0.500000","5.000000","1.000000","60","0","0","Normal",""],
+["Shoulder Missiles","WeapNVSecuritronMissile","0010BA90","TaleOfTwoWastelands.esm","Barter","Missile","10","0.000000","0","6","2.500000","5.000000","20.000000","20.000000","500","0","2","Normal","1"],
+["Missing Laser Pistol","HVMissingLaserPistol","0010A6FC","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","11","1.500000","11","30","3.750000","0.100000","0.000000","3.000000","175","0","1","Normal",""],
+["Long Fuse Dynamite","WeapNVLongFuseDynamite","00109A0C","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.405400","0.000000","5.000000","0.300000","25","0","1","Normal","1"],
+["Cleaver","WeapNVCleaver","00109A0A","TaleOfTwoWastelands.esm","Melee Weapons","","7","1.000000","7","1","2.538461","0.000000","0.000000","2.000000","20","0","2","Silent",""],
+["Rorschach Drawing","NVRorschach01","001084AD","TaleOfTwoWastelands.esm","Unarmed","","0","1.000000","0","12","0.000000","0.000000","10.000000","0.000000","0","0","0","Normal",""],
+["All-American","WeapNVMarksmanCarbineUnique","00106FEB","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","26","1.000000","26","24","6.000006","0.035000","4.000000","6.000000","590","100","4","Loud",""],
+["Marksman Carbine","WeapNVMarksmanCarbine","00106FEA","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","24","1.000000","24","20","5.700006","0.040000","4.000000","6.000000","520","100","4","Loud",""],
+["Lily's Gauntlet","WeapNVLilyGauntlet","00105CF6","TaleOfTwoWastelands.esm","Unarmed","","20","1.000000","20","12","1.090909","0.000000","0.000000","0.000000","100","0","8","Normal",""],
+["Lily's Vertibird Blade","WeapNVLilySword","00105CF5","TaleOfTwoWastelands.esm","Melee Weapons","","24","1.000000","24","12","1.799999","0.000000","10.000000","0.000000","130","0","9","Silent",""],
+["Broken Missile Launcher","WeapMissileLauncherBroken","001056D2","TaleOfTwoWastelands.esm","Explosives","AmmoListMissile","0","0.000000","0","1","1.578947","0.500000","4.000000","20.000000","0","0","0","Normal",""],
+["Pew Pew","WeapNVLaserPistolUnique","00103B1D","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","75","2.500000","50","10","2.000000","0.100000","0.030000","3.000000","250","0","1","Normal",""],
+["Dynamite","WeapNVDynamiteNoDrop","0010108D","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.652200","0.000000","5.000000","0.500000","25","0","0","Normal",""],
+["Grenade Rifle","WeapNVGrenadeRifle","000FF576","TaleOfTwoWastelands.esm","Explosives","AmmoList40mmGrenade","10","1.000000","1","1","2.142857","1.000000","3.000000","6.000000","200","25","3","Normal",""],
+["9 Iron","WeapNV9iron","000FC335","TaleOfTwoWastelands.esm","Melee Weapons","","17","1.000000","17","1","2.249999","0.000000","0.000000","3.000000","55","25","2","Silent",""],
+["The Disintegrator","WeapLaserRifleAlwaysCrits","000F82AA","TaleOfTwoWastelands.esm","Energy Weapons","Microfusion Cell","1000","100.000000","22","255","3.818200","0.000000","0.000000","8.000000","1000","0","0","Loud",""],
+["Nephi's Golf Driver","WeapNVDriverUnique","000F56F6","TaleOfTwoWastelands.esm","Melee Weapons","","30","1.200000","30","1","2.368422","0.000000","0.000000","1.000000","75","25","2","Silent",""],
+["La Longue Carabine","WeapNVCowboyRepeaterUnique","000F56F5","TaleOfTwoWastelands.esm","Guns","AmmoList357Magnum","35","1.500000","35","11","2.153846","0.050000","0.000000","5.000000","150","25","5","Normal",""],
+["Straight Razor","WeapNVStraightRazor","000F0F04","TaleOfTwoWastelands.esm","Melee Weapons","","5","2.000000","10","1","3.692300","0.000000","10.000000","1.000000","35","0","1","Silent",""],
+["Dinner Bell","WeapNVHuntingShotgunUnique","000F0B12","TaleOfTwoWastelands.esm","Guns","AmmoList12Ga","75","1.000000","11","5","1.666667","1.200000","0.000000","7.500000","480","75","5","Loud",""],
+["This Machine","WeapNVBattleRifleUnique","000F062B","TaleOfTwoWastelands.esm","Guns","AmmoList308","55","1.000000","55","8","2.142857","0.500000","1.000000","9.500000","280","75","6","Normal",""],
+["Service Rifle","WeapNVServiceRifle","000E9C3B","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","18","1.000000","18","20","4.214000","0.550000","0.000000","8.500000","200","25","2","Normal",""],
+["Maria","WeapNV9mmPistolUnique","000E7655","TaleOfTwoWastelands.esm","Guns","AmmoList9mm","23","2.000000","23","13","3.749999","0.200000","0.500000","1.500000","200","0","2","Normal",""],
+["Q-35 Matter Modulator","WeapNVPlasmaRifleUnique","000E6064","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","40","2.000000","62","12","2.400000","0.200000","0.200000","7.000000","750","25","2","Loud",""],
+["Ratslayer","WeapNVVarmintRifleUnique","000E5B17","TaleOfTwoWastelands.esm","Guns","AmmoList22LR","23","5.000000","23","8","1.302632","0.020000","0.000000","4.500000","125","0","3","Silent",""],
+["Golden Gloves","WeapNVBoxingGoldenGloves","000E58BB","TaleOfTwoWastelands.esm","Unarmed","","1","2.000000","1","12","1.263157","0.000000","0.000000","6.000000","30","0","1","Normal",""],
+["Boxing Gloves","WeapNVBoxingGloves","000E5391","TaleOfTwoWastelands.esm","Unarmed","","1","1.000000","1","12","1.263157","0.000000","0.000000","6.000000","20","0","1","Normal",""],
+["Single Shotgun","WeapNVSingleShotgun","000E393B","TaleOfTwoWastelands.esm","Guns","AmmoList20Ga","50","1.000000","7","1","2.571429","1.400000","4.000000","7.000000","100","0","5","Loud",""],
+["Silenced .22 Pistol","WeapNVSilenced22Pistol","000E377A","TaleOfTwoWastelands.esm","Guns","AmmoList22LR","12","3.000000","30","16","3.499999","0.500000","2.000000","3.000000","80","0","1","Silent",""],
+["9mm Pistol","WeapNV9mmPistol","000E3778","TaleOfTwoWastelands.esm","Guns","AmmoList9mm","18","1.000000","18","13","3.125000","0.700000","0.000000","1.500000","100","0","2","Normal",""],
+["Vance's 9mm Submachine Gun","WeapNV9mmSubmachineGunUnique","000E32F4","TaleOfTwoWastelands.esm","Guns","AmmoList9mm","17","1.000000","17","60","13.000000","1.500000","0.000000","4.000000","150","25","3","Loud",""],
+["Lucky","WeapNV357RevolverUnique","000E2C86","TaleOfTwoWastelands.esm","Guns","AmmoList357Magnum","30","2.500000","30","6","2.750000","0.300000","3.000000","2.500000","150","0","3","Normal",""],
+["Heavy Incinerator","WeapHeavyIncinerator","000E2BFC","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListFlamerFuel","15","4.000000","5","24","4.000000","0.500000","6.000000","15.000000","500","100","8","Normal",""],
+["Tri-beam Laser Rifle","WeapNVTriBeamLaserRifle","000E2BF4","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","66","1.500000","22","24","2.727279","0.500000","2.000000","9.000000","1000","75","4","Loud",""],
+["Tesla Cannon","WeapTeslaCannon","000E2BEC","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListElectronChargePack","80","2.000000","40","20","1.342105","0.100000","0.000000","8.000000","2000","100","8","Normal",""],
+["Laser","NVSteelTurret03Laser2HR","000DA499","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","10","1.000000","6","200","5.000000","2.000000","3.000000","1.000000","290","0","0","Normal",""],
+["Machete","WeapNVMachete","000CE569","TaleOfTwoWastelands.esm","Melee Weapons","","11","1.500000","11","1","3.000000","0.000000","0.000000","2.000000","50","25","3","Silent",""],
+["Boone's Scoped Hunting Rifle","WeapBooneSniperRifle","000CE549","TaleOfTwoWastelands.esm","Guns","Magical Companion Ammo","52","0.250000","15","5","0.789474","0.015000","0.000000","0.000000","260","50","6","Loud",""],
+["Caravan Shotgun","WeapNVCaravanShotgun","000CD53A","TaleOfTwoWastelands.esm","Guns","AmmoList20Ga","45","1.000000","6","2","3.214286","2.200000","0.000000","3.000000","175","25","3","Loud",""],
+["Trail Carbine","WeapNVTrailCarbine","000CD539","TaleOfTwoWastelands.esm","Guns","AmmoList44Magnum","48","1.000000","48","8","1.538461","0.060000","0.000000","5.500000","390","75","5","Loud",""],
+["Rebar Club","WeapNVRebarClub","000CD50E","TaleOfTwoWastelands.esm","Melee Weapons","","42","0.500000","24","1","1.199999","0.000000","0.000000","9.000000","80","50","9","Silent",""],
+["Bumper Sword","WeapNVBumperSword","000CD50D","TaleOfTwoWastelands.esm","Melee Weapons","","32","1.000000","32","12","1.349999","0.000000","10.000000","12.000000","150","50","8","Silent",""],
+["BB Gun","CG02WeapBBGun","000C0327","TaleOfTwoWastelands.esm","Guns","BB","4","1.000000","4","100","0.750000","0.500000","1.500000","2.000000","36","0","0","Silent",""],
+["Mesmetron","RobobrainMesmetron","000BF5A4","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","1","100.000000","10","1","1.578900","1.000000","1.000000","2.000000","500","0","0","Normal",""],
+["Dynamite","WeapNVDynamite","000BA0F3","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.405405","0.000000","5.000000","0.300000","25","0","1","Normal","1"],
+["Fire Spit","MS04QueenAnt2HL","000B8793","TaleOfTwoWastelands.esm","Barter","Missile","70","4.000000","5","200","0.789500","1.000000","4.000000","1.000000","130","","0","Silent",""],
+["Rolling Pin","WeapRollingPin","000B2943","TaleOfTwoWastelands.esm","Melee Weapons","","3","0.000000","8","12","1.730769","0.000000","0.000000","1.000000","10","0","2","Silent",""],
+["Nail Board","WeapNailBoard","000A01DD","TaleOfTwoWastelands.esm","Melee Weapons","","25","0.000000","25","12","1.421053","0.000000","10.000000","4.000000","30","25","7","Silent",""],
+["Pulse Gun","WeapNVPulseGun","00090A6B","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","5","1.000000","5","25","1.034500","0.100000","0.500000","2.000000","180","25","2","Normal",""],
+["Grenade Machinegun","WeapNVGrenadeMachinegun","00090A6A","TaleOfTwoWastelands.esm","Explosives","AmmoList25mmGrenade","5","1.000000","0","30","3.000000","1.000000","3.000000","15.000000","2500","100","8","Normal",""],
+["Laser RCW","WeapNVLaserRCW","0009073B","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListElectronChargePack","15","0.500000","15","60","9.000000","0.080000","0.500000","4.000000","600","50","4","Normal",""],
+["Plasma Defender","WeapNVPlasmaDefender","00090727","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","38","1.000000","38","32","2.500000","0.300000","2.000000","2.000000","300","75","2","Normal",""],
+["Recharger Pistol","WeapNVRechargerPistol","0009071F","TaleOfTwoWastelands.esm","Energy Weapons","Microfusion Breeder","18","1.500000","18","20","5.000000","0.100000","0.200000","7.000000","270","50","2","Normal",""],
+["Light Machine Gun","WeapNVLightMachineGun","000906DF","TaleOfTwoWastelands.esm","Guns","AmmoList556mm","21","1.000000","21","90","12.000000","1.500000","0.000000","15.000000","800","100","8","Loud",""],
+["Incinerator","WeapNVIncinerator","000906DA","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListFlamerFuel","1","4.000000","1","30","2.000000","0.100000","0.500000","12.000000","400","25","6","Normal",""],
+["Plasma Caster","WeapNVPlasmaCaster","000906CF","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","65","1.000000","65","10","3.000000","0.700000","0.000000","20.000000","1000","100","8","Normal",""],
+["Assault Carbine","WeapNVAssaultCarbine","0008F21E","TaleOfTwoWastelands.esm","Guns","AmmoList5mm","13","1.000000","13","24","12.000000","1.200000","4.000000","6.000000","500","75","3","Loud",""],
+["Anti-Materiel Rifle","WeapNVAntiMaterielRifle","0008F21C","TaleOfTwoWastelands.esm","Guns","AmmoList50MG","225","1.000000","110","8","0.447761","0.015000","2.000000","20.000000","3000","100","8","Loud",""],
+["Cowboy Repeater","WeapNVCowboyRepeater","0008F21A","TaleOfTwoWastelands.esm","Guns","AmmoList357Magnum","32","1.250000","32","7","1.692307","0.060000","0.000000","5.000000","125","25","4","Normal",""],
+["Silenced .22 SMG","WeapNVSilenced22SMG","0008F218","TaleOfTwoWastelands.esm","Guns","AmmoList22LR","11","3.000000","26","180","11.000000","2.000000","4.000000","8.000000","180","50","2","Silent",""],
+["9mm Submachine Gun","WeapNV9mmSubmachineGun","0008F217","TaleOfTwoWastelands.esm","Guns","AmmoList9mm","14","1.000000","14","30","11.000000","1.500000","0.000000","4.000000","125","25","3","Loud",""],
+[".357 Magnum Revolver","WeapNV357Revolver","0008F216","TaleOfTwoWastelands.esm","Guns","AmmoList357Magnum","26","1.000000","26","6","1.750000","0.500000","3.000000","2.000000","110","0","3","Normal",""],
+[".44 Magnum Revolver","WeapNV44Revolver","0008F215","TaleOfTwoWastelands.esm","Guns","AmmoList44Magnum","44","1.000000","44","6","1.875000","0.700000","0.000000","3.500000","250","50","5","Loud",""],
+["Hunting Revolver","WeapNVHuntingRevolver","0008F214","TaleOfTwoWastelands.esm","Guns","AmmoList4570","58","1.000000","58","5","1.500000","0.350000","4.000000","4.000000","350","75","6","Loud",""],
+["12.7mm Pistol","WeapNV127mmPistol","0008F213","TaleOfTwoWastelands.esm","Guns","AmmoList127mm","40","1.000000","40","7","2.750000","1.100000","0.000000","3.500000","400","75","7","Normal",""],
+["Lever-Action Shotgun","WeapNVLeverActionShotgun","0008ED0C","TaleOfTwoWastelands.esm","Guns","AmmoList20Ga","48","1.000000","7","5","1.769230","1.900000","0.000000","3.000000","200","50","4","Loud",""],
+["Hunting Shotgun","WeapNVHuntingShotgun","0008ED0B","TaleOfTwoWastelands.esm","Guns","AmmoList12Ga","70","1.000000","10","5","1.666667","1.500000","0.000000","7.500000","380","75","5","Loud",""],
+["Riot Shotgun","WeapNVRiotShotgun","0008ED0A","TaleOfTwoWastelands.esm","Guns","AmmoList12Ga","67","1.000000","10","12","4.000001","2.500000","0.000000","5.000000","550","100","7","Loud",""],
+["Grenade Launcher","WeapNVGrenadeLauncher","0007EA25","TaleOfTwoWastelands.esm","Explosives","AmmoList40mmGrenade","30","1.000000","0","4","0.555556","1.000000","3.000000","12.000000","420","75","5","Normal",""],
+["Varmint Rifle","WeapNVVarmintRifle","0007EA24","TaleOfTwoWastelands.esm","Guns","AmmoList22LR","18","1.000000","18","5","1.215790","0.024000","0.000000","5.500000","75","0","3","Normal",""],
+["Laser","Turret03Laser2HR","0007B23A","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","6","1.000000","6","200","30.000000","1.500000","3.000000","1.000000","290","0","0","Normal",""],
+["Laser","Turret02Laser2HR","0007B239","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","5","1.000000","5","200","25.000000","1.500000","3.000000","1.000000","180","0","0","Normal",""],
+["Laser","Turret01Laser2HR","0007B237","TaleOfTwoWastelands.esm","Energy Weapons","Energy Cell","5","1.000000","5","200","15.000000","1.000000","15.000000","1.000000","100","0","0","Normal",""],
+["Radioactive Spit","CentaurSpitMissile","00058717","TaleOfTwoWastelands.esm","Big Guns","Missile","30","4.000000","10","1","1.578947","1.000000","2.000000","1.000000","130","","0","Silent",""],
+["Missile Launcher","SentryBotMissileLauncher2HL","00057E8F","TaleOfTwoWastelands.esm","Big Guns","Missile","20","1.000000","0","1","1.578947","0.500000","10.000000","15.000000","4300","0","0","Normal",""],
+["SentryBot Minigun","SentryBotMinigun2HR","00057E8E","TaleOfTwoWastelands.esm","Big Guns","5mm Round","9","0.000000","0","255","15.000000","2.000000","5.000000","15.000000","1070","0","0","Normal",""],
+["SentryBot Laser Gatling","SentryBotGatling2HH","000389AF","TaleOfTwoWastelands.esm","Energy Weapons","Electron Charge Pack","9","0.000000","13","255","20.000000","0.100000","2.000000","15.000000","1070","0","0","Normal",""],
+["Baseball","TrapBaseball","00033D84","TaleOfTwoWastelands.esm","Explosives","","6","20.000000","10","12","2.500000","0.000000","10.000000","1.000000","2","0","0","Normal","1"],
+["Switchblade","WeapSwitchBlade","000289C3","TaleOfTwoWastelands.esm","Melee Weapons","","7","2.000000","11","1","4.846200","0.000000","10.000000","1.000000","35","25","1","Silent",""],
+["Electrical Zap","EyeBot1HP","00022FF1","TaleOfTwoWastelands.esm","Guns","Energy Cell","5","1.000000","0","12","2.500000","0.000000","10.000000","0.000000","110","0","0","Normal",""],
+["Spiked Knuckles","WeapSpikedKnuckles","00004354","TaleOfTwoWastelands.esm","Unarmed","","25","1.000000","25","12","2.368420","0.000000","0.000000","1.000000","25","50","3","Silent",""],
+["Sniper Rifle","WeapSniperRifle","00004353","TaleOfTwoWastelands.esm","Guns","AmmoList308","62","2.000000","62","5","1.928571","0.020000","0.000000","8.000000","300","75","6","Loud",""],
+["Super Sledge","WeapSuperSledge","00004352","TaleOfTwoWastelands.esm","Melee Weapons","","70","1.000000","35","1","1.578948","0.000000","0.000000","20.000000","180","100","8","Normal",""],
+["Sledgehammer","WeapSledgehammer","00004351","TaleOfTwoWastelands.esm","Melee Weapons","","24","1.000000","24","1","1.800001","0.000000","10.000000","12.000000","130","50","7","Silent",""],
+["10mm Pistol","Weap10mmPistol","0000434F","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","22","1.000000","22","12","2.750000","0.800000","0.500000","3.000000","225","25","4","Normal",""],
+["Shishkebab","WeapShishkebab","0000434E","TaleOfTwoWastelands.esm","Melee Weapons","","40","2.000000","20","12","2.307692","0.000000","0.000000","3.000000","200","75","6","Silent",""],
+["Sawed-Off Shotgun","WeapShotgunSawedOff","0000434C","TaleOfTwoWastelands.esm","Guns","AmmoList12Ga","100","1.000000","7","2","2.343750","4.000000","10.000000","4.000000","175","50","4","Loud",""],
+["Ripper","WeapRipper","00004349","TaleOfTwoWastelands.esm","Melee Weapons","","50","1.000000","5","12","1.000000","0.000000","10.000000","6.000000","100","50","3","Normal",""],
+["Power Fist","WeapPowerFist","00004347","TaleOfTwoWastelands.esm","Unarmed","","40","1.000000","40","12","1.090909","0.000000","0.000000","6.000000","100","50","5","Normal",""],
+["Pool Cue","WeapPoolCue","00004346","TaleOfTwoWastelands.esm","Melee Weapons","","15","0.000000","15","1","1.499999","0.000000","0.000000","1.000000","15","0","2","Silent",""],
+["Police Baton","WeapPoliceBaton","00004345","TaleOfTwoWastelands.esm","Melee Weapons","","10","1.000000","10","1","2.769200","0.000000","0.000000","2.000000","70","0","1","Silent",""],
+["Plasma Rifle","WeapPlasmaRifle","00004344","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","47","2.000000","47","24","1.400000","0.200000","0.200000","8.000000","650","25","3","Loud",""],
+["Plasma Pistol","WeapPlasmaPistol","00004343","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","33","1.500000","33","32","1.750000","0.500000","2.200000","3.000000","200","0","2","Normal",""],
+["Missile Launcher","WeapMissileLauncher","00004340","TaleOfTwoWastelands.esm","Explosives","AmmoListMissile","125","0.000000","0","1","1.578947","0.300000","4.000000","20.000000","500","75","6","Normal",""],
+["Minigun","WeapMinigun","0000433F","TaleOfTwoWastelands.esm","Guns","AmmoList5mm","12","0.500000","12","240","20.000000","1.000000","0.000000","25.000000","1000","100","10","Loud",""],
+["Pulse Mine","WeapMinePulse","0000433E","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.500000","1.000000","1.000000","0.500000","40","50","2","Silent","1"],
+["Plasma Mine","WeapMinePlasma","0000433D","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.500000","1.000000","1.000000","0.500000","50","75","2","Silent","1"],
+["Frag Mine","WeapMineFrag","0000433C","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.500000","1.000000","1.000000","0.500000","25","25","1","Silent","1"],
+["Bottlecap Mine","WeapMineBottlecap","0000433A","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.326087","1.000000","1.000000","0.500000","75","0","1","Silent","1"],
+["Lead Pipe","WeapLeadPipe","00004337","TaleOfTwoWastelands.esm","Melee Weapons","","22","1.000000","22","12","2.538461","0.000000","10.000000","3.000000","75","50","5","Silent",""],
+["Laser Rifle","WeapLaserRifle","00004336","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListMicroFusionCell","26","1.500000","26","24","3.081825","0.025000","0.000000","8.000000","500","25","3","Normal",""],
+["Laser Pistol","WeapLaserPistol","00004335","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListSmallEnergyCell","16","1.500000","16","30","4.500000","0.100000","0.000000","3.000000","175","0","1","Normal",""],
+["Knife","WeapKnife","00004334","TaleOfTwoWastelands.esm","Melee Weapons","","8","1.000000","8","12","3.000000","0.000000","0.000000","1.000000","20","0","1","Silent",""],
+["Hunting Rifle","WeapHuntingRifle","00004333","TaleOfTwoWastelands.esm","Guns","AmmoList308","52","2.000000","52","5","0.947369","0.010000","0.000000","6.000000","250","50","6","Loud",""],
+["Plasma Grenade","WeapGrenadePlasma","00004332","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.652174","1.000000","2.000000","0.500000","50","75","2","Silent","1"],
+["Pulse Grenade","WeapGrenadePulse","00004331","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.652174","1.000000","2.000000","0.500000","40","50","2","Silent","1"],
+["Frag Grenade","WeapGrenadeFrag","00004330","TaleOfTwoWastelands.esm","Explosives","","1","1.000000","0","12","0.652174","0.000000","5.000000","0.500000","25","25","2","Silent","1"],
+["Gatling Laser","WeapGatlingLaser","0000432E","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListElectronChargePack","10","1.000000","10","240","30.000000","0.600000","0.500000","18.000000","2000","100","8","Loud",""],
+["Flamer","WeapFlamer","0000432D","TaleOfTwoWastelands.esm","Energy Weapons","AmmoListFlamerFuel","16","4.000000","1","60","8.000000","0.500000","1.000000","15.000000","500","50","7","Normal",""],
+["Fat Man","WeapFatman","0000432C","TaleOfTwoWastelands.esm","Explosives","AmmoListMiniNuke","400","1.000000","0","1","1.578947","0.500000","2.000000","30.000000","1000","100","8","Loud","1"],
+["Deathclaw Gauntlet","WeapDeathclawGauntlet","0000432B","TaleOfTwoWastelands.esm","Unarmed","","40","2.000000","50","1","1.630434","0.000000","0.000000","10.000000","150","100","6","Silent",""],
+["Tire Iron","WeapTireIron","00004328","TaleOfTwoWastelands.esm","Melee Weapons","","15","1.000000","15","12","2.307692","0.000000","10.000000","3.000000","40","0","3","Silent",""],
+["Combat Knife","WeapKnifeCombat","00004326","TaleOfTwoWastelands.esm","Melee Weapons","","15","2.000000","15","12","3.230769","0.000000","0.000000","1.000000","50","50","3","Silent",""],
+["Brass Knuckles","WeapBrassKnuckles","00004324","TaleOfTwoWastelands.esm","Unarmed","","18","1.000000","18","12","2.052632","0.000000","0.000000","1.000000","20","25","2","Silent",""],
+["BB Gun","WeapBBGun","00004323","TaleOfTwoWastelands.esm","Guns","BB","4","1.000000","4","100","1.538500","0.500000","1.500000","2.000000","36","0","1","Silent",""],
+["Alien Blaster","WeapAlienBlaster","00004322","TaleOfTwoWastelands.esm","Energy Weapons","TTWAmmoListAlien","75","100.000000","50","10","1.750000","0.000000","0.000000","2.000000","500","75","1","Loud",""],
+["10mm Submachine Gun","Weap10mmSubmachineGun","00004321","TaleOfTwoWastelands.esm","Guns","AmmoList10mm","19","1.000000","19","30","9.000000","2.200000","0.000000","5.000000","330","50","5","Loud",""],
+["Baseball Bat","WeapBaseballBat","0000421C","TaleOfTwoWastelands.esm","Melee Weapons","","22","1.000000","22","12","1.649999","0.000000","0.000000","3.000000","55","25","4","Silent",""]
+];
+const TYPENORM = { "Big Guns": "Guns" };
+const AMMOPRETTY = {
+  "AmmoList12Ga": "12 gauge", "AmmoList20Ga": "20 gauge", "AmmoList22LR": ".22 LR",
+  "AmmoList25mmGrenade": "25mm grenade", "AmmoList40mmGrenade": "40mm grenade",
+  "AmmoList127mm": "12.7mm", "AmmoList308": ".308", "AmmoList357Magnum": ".357 Magnum",
+  "AmmoList44Magnum": ".44 Magnum", "AmmoList4570": ".45-70 Gov't",
+  "AmmoList5mm": "5mm", "AmmoList50MG": ".50 MG", "AmmoList556mm": "5.56mm",
+  "AmmoList9mm": "9mm", "AmmoList10mm": "10mm",
+  "AmmoListFlamerFuel": "Flamer fuel", "AmmoListMiniNuke": "Mini nuke", "AmmoListMissile": "Missile",
+  "AmmoListMicroFusionCell": "Micro fusion cell", "AmmoListSmallEnergyCell": "Small energy cell",
+  "AmmoListElectronChargePack": "Electron charge pack",
+  "TTWAmmoList32Caliber": ".32 Caliber", "TTWAmmoListAlien": "Alien power module",
+  "TTWAmmoListDart": "Dart", "TTWAmmoCryolator": "Cryolator",
+  "NVDLC02AmmoList45Auto": ".45 Auto", "NVDLC04AmmoListRocket": "Rocket",
+  "NVDLC05AmmoListFatMan": "Mini nuke", "RockItLauncherAmmo": "Rock-It Launcher ammo",
+  "Magical Companion Ammo": "Companion ammo (magical)"
+};
+function prettyAmmo(s) {
+  if (!s) return "";
+  if (AMMOPRETTY[s]) return AMMOPRETTY[s];
+  return s.replace(/^(?:NVDLC\d+|TTW)?AmmoList/, "").replace(/([a-z])([A-Z])/g, "$1 $2");
+}
+const AIPAT = /(Sentry|Turret|Brain|SecuritronMissile|Gojira|Swamplurk|CentaurSpit|QueenAnt|LibertyPrime|EDEZap|EyebotHeal|HIGHDMG|NonPlayable|NoDrop|^Trap|TrapBaseball|^M[QS][0-9])/i;
+const CUTPAT = /AlwaysCrits/i;
+const EDIDS = new Set(DATA.map(r => r[1]));
+function availOf(r) {
+  if (r[4] === "Barter" || r[4] === "Big Guns") return "AI";
+  if ((r[5] + "").indexOf("Companion") >= 0) return "Companion";
+  if (AIPAT.test(r[1])) return "AI";
+  if (CUTPAT.test(r[1])) return "Cut";
+  if (EDIDS.has(r[1] + "Wasteland")) return "Sim";
+  return "Player";
+}
+function avClass(av) { return { AI: "ai", Sim: "sim", Companion: "comp", Cut: "cut" }[av] || "ai"; }
+function avLabel(av) { return { AI: "AI", Sim: "SIM", Companion: "COMP", Cut: "CUT" }[av] || av; }
+
+let sortCol = "cx", sortDir = -1;
+const $ = id => document.getElementById(id);
+
+function fmt(n) {
+  if (!isFinite(n)) return "";
+  if (Number.isInteger(n)) return String(n);
+  const s = n.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
+  return s;
+}
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"); }
+
+function parseQuery(s) {
+  s = (s || "").trim().toLowerCase();
+  if (!s) return [];
+  return s.split(/\bor\b|\|/).map(g =>
+    g.replace(/\band\b|&/g, " ").trim().split(/\s+/).filter(Boolean)
+  ).filter(g => g.length > 0);
+}
+function hayOf(r) {
+  return (r[0] + "|" + r[1] + "|" + r[5] + "|" + prettyAmmo(r[5]) + "|" + (TYPENORM[r[4]] || r[4])).toLowerCase();
+}
+function qMatch(hay, groups) {
+  if (!groups.length) return true;
+  return groups.some(g => g.every(t => hay.indexOf(t) >= 0));
+}
+
+function filtered() {
+  const groups = parseQuery($("q").value);
+  const type = $("type").value, host = $("host").value, avsel = $("avail").value;
+  const critOnly = $("critonly").checked;
+  return DATA.filter(r => {
+    const av = availOf(r);
+    if (avsel === "player" && av !== "Player") return false;
+    if (avsel === "more" && (av === "AI" || av === "Cut")) return false;
+    if (type && (TYPENORM[r[4]] || r[4]) !== type) return false;
+    if (host && r[2].substring(0, 2) !== host) return false;
+    if (critOnly && +r[7] < 1.5) return false;
+    return qMatch(hayOf(r), groups);
+  });
+}
+
+function render() {
+  const rows = filtered();
+  const col = COLS.find(c => c.k === sortCol) || COLS[3];
+  rows.sort((a, b) => {
+    const va = col.get(a), vb = col.get(b);
+    let d;
+    if (col.str) d = String(va).localeCompare(String(vb));
+    else d = (va || 0) - (vb || 0);
+    if (d === 0) d = String(a[0]).localeCompare(String(b[0]));
+    return d * sortDir;
+  });
+  const body = [];
+  for (const r of rows) {
+    const av = availOf(r);
+    const cx = +r[7], cs = +r[6] + +r[8];
+    const cxClass = cx >= 2.5 ? "hot" : (cx >= 1.5 ? "" : "dim");
+    const badge = av === "Player" ? "" :
+      " <span class='tag " + avClass(av) + "'>" + avLabel(av) + "</span>";
+    body.push("<tr><td class='str name'>" + esc(r[0]) + badge + "</td>"
+      + "<td class='str'>" + esc(TYPENORM[r[4]] || r[4]) + "</td>"
+      + "<td class='str dim'>" + esc(av) + "</td>"
+      + "<td>" + esc(fmt(+r[6])) + "</td>"
+      + "<td class='" + cxClass + "'>" + esc(fmt(cx)) + "</td>"
+      + "<td>" + esc(fmt(+r[8])) + "</td>"
+      + "<td class='" + (cs >= 100 ? "hot" : "") + "'>" + esc(fmt(cs)) + "</td>"
+      + "<td>" + esc(fmt(+r[9])) + "</td><td>" + esc(fmt(+r[10])) + "</td>"
+      + "<td class='str' title='" + esc(r[5]) + "'>" + esc(prettyAmmo(r[5])) + "</td>"
+      + "<td>" + esc(fmt(+r[12])) + "</td>"
+      + "<td>" + esc(fmt(+r[13])) + "</td><td>" + esc(fmt(+r[14])) + "</td>"
+      + "<td>" + esc(fmt(+r[15])) + "</td><td>" + esc(fmt(+r[16])) + "</td>"
+      + "<td class='str'>" + esc(r[17]) + "</td>"
+      + "<td class='str dim'>" + esc(r[1]) + "</td><td class='dim'>" + esc(r[2]) + "</td>"
+      + "<td class='str dim'>" + esc(HOSTMAP[r[2].substring(0, 2)] || r[2].substring(0, 2)) + "</td>"
+      + "<td class='str dim'>" + esc(r[3]) + "</td></tr>");
+  }
+  $("body").innerHTML = body.join("");
+  $("count").textContent = rows.length + " of " + DATA.length + " weapons";
+}
+
+function renderHeader() {
+  $("hdr").innerHTML = COLS.map(c =>
+    "<th class='" + (c.str ? "str" : "") + "' data-k='" + c.k + "'>"
+    + esc(c.t) + (c.k === sortCol ? " <span class='arr'>" + (sortDir < 0 ? "\u25bc" : "\u25b2") + "</span>" : "")
+    + "</th>").join("");
+  Array.from($("hdr").children).forEach(th => th.addEventListener("click", () => {
+    const k = th.getAttribute("data-k");
+    if (sortCol === k) sortDir *= -1; else { sortCol = k; sortDir = -1; }
+    renderHeader(); render();
+  }));
+}
+
+function initSelects() {
+  const types = [...new Set(DATA.map(r => TYPENORM[r[4]] || r[4]))].filter(Boolean).sort();
+  $("type").innerHTML = "<option value=''>All types</option>"
+    + types.map(t => "<option value='" + esc(t) + "'>" + esc(t === "Barter" ? "Barter (AI-only)" : t) + "</option>").join("");
+  const hosts = [...new Set(DATA.map(r => r[2].substring(0, 2)))].sort();
+  $("host").innerHTML = "<option value=''>All source files</option>"
+    + hosts.map(h => "<option value='" + h + "'>" + esc(HOSTMAP[h] || h) + "</option>").join("");
+}
+
+const CMPSTATS = [
+  { t: "Damage",             get: r => +r[6],                        dir: 1 },
+  { t: "Crit \u00d7",        get: r => +r[7],                        dir: 1 },
+  { t: "Crit damage",       get: r => +r[8],                        dir: 1 },
+  { t: "Damage on crit",    get: r => +r[6] + +r[8],                 dir: 1 },
+  { t: "Clip",              get: r => +r[9],                        dir: 1 },
+  { t: "Shots/sec",         get: r => +r[10],                       dir: 1 },
+  { t: "Spread",            get: r => +r[12],                        dir: -1 },
+  { t: "Weight",            get: r => +r[13],                        dir: -1 },
+  { t: "Value (caps)",      get: r => +r[14],                        dir: 0 },
+  { t: "Skill req",         get: r => +r[15],                        dir: -1 },
+  { t: "STR req",           get: r => +r[16],                        dir: -1 },
+  { t: "Crit % @ 38% base (+5 flat)", get: r => (+r[7] === 0 ? 0 : Math.min(100, Math.min(100, 38 * +r[7]) + 5)), dir: 1 }
+];
+const CMPTEXT = [
+  { t: "Skill",     get: r => TYPENORM[r[4]] || r[4] },
+  { t: "Usable",    get: r => availOf(r) },
+  { t: "Ammo",      get: r => prettyAmmo(r[5]) },
+  { t: "Sound",     get: r => r[17] },
+  { t: "Editor ID", get: r => r[1] },
+  { t: "FormID",    get: r => r[2] },
+  { t: "Host file", get: r => HOSTMAP[r[2].substring(0, 2)] || r[2].substring(0, 2) }
+];
+
+function fillCompare() {
+  const opts = DATA.map((r, i) => ({ i: String(i), label: r[0] + " \u2014 " + r[1] }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+  for (const id of ["cmpA", "cmpB"]) {
+    $(id).innerHTML = "<option value=''>\u2014 pick a weapon \u2014</option>"
+      + opts.map(o => "<option value='" + o.i + "'>" + esc(o.label) + "</option>").join("");
+  }
+  $("cmpA").addEventListener("change", renderCompare);
+  $("cmpB").addEventListener("change", renderCompare);
+}
+
+function renderCompare() {
+  const avs = $("cmpA").value, bvs = $("cmpB").value;
+  const a = avs === "" ? null : DATA[+avs], b = bvs === "" ? null : DATA[+bvs];
+  const out = $("cmpout");
+  if (!a || !b) {
+    out.innerHTML = "<p class='help'>Pick a weapon in each dropdown for a stat-by-stat diff; green = better, red = worse.</p>";
+    return;
+  }
+  let h = "<table><tr><th>Stat</th><th>" + esc(a[0]) + "</th><th>" + esc(b[0]) + "</th></tr>";
+  for (const s of CMPSTATS) {
+    const va = s.get(a), vb = s.get(b);
+    let ca = "", cb = "";
+    if (s.dir) {
+      const d = (va - vb) * s.dir;
+      if (d > 0) { ca = "good"; cb = "bad"; }
+      else if (d < 0) { ca = "bad"; cb = "good"; }
+    }
+    h += "<tr><td class='stat'>" + esc(s.t) + "</td>"
+      + "<td class='" + ca + "'>" + esc(fmt(va)) + "</td>"
+      + "<td class='" + cb + "'>" + esc(fmt(vb)) + "</td></tr>";
+  }
+  for (const s of CMPTEXT) {
+    h += "<tr><td class='stat'>" + esc(s.t) + "</td>"
+      + "<td>" + esc(s.get(a)) + "</td>"
+      + "<td>" + esc(s.get(b)) + "</td></tr>";
+  }
+  out.innerHTML = h + "</table>";
+}
+
+function downloadCSV() {
+  const rows = filtered();
+  const header = COLS.map(c => c.t);
+  const lines = [header.join(",")];
+  for (const r of rows) {
+    const vals = COLS.map(c => {
+      let v = c.get(r);
+      if (c.k === "host") v = HOSTMAP[r[2].substring(0, 2)] || r[2].substring(0, 2);
+      v = String(v == null ? "" : v);
+      if (/[",\n]/.test(v)) v = '"' + v.replace(/"/g, '""') + '"';
+      return v;
+    });
+    lines.push(vals.join(","));
+  }
+  const csv = lines.join("\r\n");
+  const a = document.createElement("a");
+  a.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+  a.download = "ttw_weapons.csv";
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+function calcCrit() {
+  const a = parseFloat($("calcA").value) || 0;
+  const b = parseFloat($("calcB").value) || 0;
+  $("calcC").textContent = fmt(Math.min(100, a * b));
+}
+function toggleExpl(id) {
+  const e = $(id);
+  e.style.display = (e.style.display === "block") ? "none" : "block";
+}
+
+["q", "type", "host", "critonly", "avail"].forEach(id =>
+  $(id).addEventListener("input", render));
+$("csv").addEventListener("click", downloadCSV);
+$("dosearch").addEventListener("click", render);
+$("q").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); render(); } });
+$("calcA").addEventListener("input", calcCrit);
+$("calcB").addEventListener("input", calcCrit);
+$("qbtnA").addEventListener("click", () => toggleExpl("explA"));
+$("qbtnB").addEventListener("click", () => toggleExpl("explB"));
+$("qbtnC").addEventListener("click", () => toggleExpl("explC"));
+calcCrit();
+initSelects();
+fillCompare();
+renderHeader();
+render();
+</script>
+</body>
+</html>
