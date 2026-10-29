@@ -4,7 +4,7 @@ A static, single-file HTML table of weapon stats from a Tale of Two Wastelands
 (TTW) install, with a critical-hit calculator and a head-to-head comparison of
 any two weapons.
 
-**Live page:** https://github.com/ELMO-EATS-CORN/ttw-weapon-table
+**Live page:** https://elmo-eats-corn.github.io/ttw-weapon-table/
 
 ## Features
 - 546 weapon records, sortable columns, live search (`AND` / `OR` supported)
